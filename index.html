@@ -9,28 +9,31 @@
   <meta property="og:description" content="Зачисление за 2 минуты. Курс 0.67₽/G. Берём комиссию маркета на себя.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;0,14..32,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:           #07080D;
-      --surface:      #0B0C18;
-      --card:         #0E1020;
-      --card-2:       #121424;
-      --border:       rgba(255,255,255,0.06);
-      --gold:         #E8A200;
-      --gold-2:       #FFC233;
-      --gold-dim:     rgba(232,162,0,0.09);
-      --gold-border:  rgba(232,162,0,0.22);
-      --text:         #EDEDF2;
-      --text-sec:     #8888A0;
-      --text-muted:   #50506A;
-      --green:        #22C55E;
-      --r:            18px;
-      --r-sm:         12px;
-      --r-xs:         8px;
-      --max:          660px;
+      --bg:         #07080D;
+      --surface:    #0A0B17;
+      --card:       #0E0F1E;
+      --card2:      #121325;
+      --border:     rgba(255,255,255,0.06);
+      --gold:       #E8A200;
+      --gold2:      #FFC233;
+      --gold-dim:   rgba(232,162,0,0.09);
+      --gold-glow:  rgba(232,162,0,0.18);
+      --gold-brd:   rgba(232,162,0,0.22);
+      --text:       #EEEEF5;
+      --text-sec:   #8585A0;
+      --text-muted: #4C4C68;
+      --green:      #22C55E;
+      --r:          18px;
+      --r-sm:       12px;
+      --r-xs:       8px;
+      --max:        660px;
+      --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-std:   cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     html { scroll-behavior: smooth; overflow-x: hidden; }
@@ -44,19 +47,20 @@
       overflow-x: hidden;
     }
 
-    /* ─── NAV ─── */
+    /* ════════════════════ NAV ════════════════════ */
     .nav {
       position: fixed;
       inset: 0 0 auto;
       z-index: 200;
-      padding: 13px 20px;
+      padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(7,8,13,0.75);
+      background: rgba(7,8,13,0.7);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
     }
 
     .logo {
@@ -68,7 +72,7 @@
     }
     .logo span { color: var(--gold); }
 
-    /* ─── BUTTONS ─── */
+    /* ════════════════════ BUTTONS ════════════════════ */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -84,18 +88,51 @@
       border-radius: var(--r-sm);
       border: none;
       cursor: pointer;
-      transition: opacity 0.13s, transform 0.13s;
+      transition: opacity 0.13s, transform 0.13s, box-shadow 0.2s;
       white-space: nowrap;
       line-height: 1;
+      position: relative;
+      overflow: hidden;
     }
-    .btn:hover  { opacity: 0.86; transform: translateY(-1px); }
-    .btn:active { opacity: 1;    transform: translateY(0); }
+
+    /* Shimmer effect */
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0s;
+    }
+    .btn:hover::after {
+      transform: translateX(100%);
+      transition: transform 0.55s var(--ease-std);
+    }
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px rgba(232,162,0,0.3);
+    }
+    .btn:active { transform: translateY(0); opacity: 1; box-shadow: none; }
 
     .btn-lg   { padding: 17px 38px; font-size: 17px; border-radius: 16px; }
     .btn-sm   { padding: 9px 18px; font-size: 13px; border-radius: 10px; }
     .btn-full { width: 100%; }
 
-    /* ─── HERO ─── */
+    /* ════════════════════ REVEAL ANIMATIONS ════════════════════ */
+    .r {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s var(--ease-out), transform 0.65s var(--ease-out);
+    }
+    .r.on { opacity: 1; transform: translateY(0); }
+    .r.d1 { transition-delay: 0.08s; }
+    .r.d2 { transition-delay: 0.16s; }
+    .r.d3 { transition-delay: 0.24s; }
+    .r.d4 { transition-delay: 0.32s; }
+    .r.d5 { transition-delay: 0.40s; }
+
+    /* ════════════════════ HERO ════════════════════ */
     .hero {
       min-height: 100svh;
       display: flex;
@@ -103,36 +140,49 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 130px 24px 80px;
+      padding: 130px 24px 90px;
       position: relative;
       overflow: hidden;
     }
 
-    .hero-bg {
+    /* Dot grid */
+    .hero::before {
+      content: '';
       position: absolute;
       inset: 0;
-      background:
-        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,162,0,0.12) 0%, transparent 70%),
-        radial-gradient(ellipse 100% 60% at 50% 100%, rgba(0,0,0,0.6) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
-    .hero-dots {
-      position: absolute;
-      inset: 0;
-      background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-image: radial-gradient(rgba(255,255,255,0.028) 1px, transparent 1px);
       background-size: 26px 26px;
       pointer-events: none;
-      mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 0%, transparent 100%);
-      -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 0%, transparent 100%);
+      mask-image: radial-gradient(ellipse 85% 70% at 50% 40%, black, transparent);
+      -webkit-mask-image: radial-gradient(ellipse 85% 70% at 50% 40%, black, transparent);
     }
 
+    /* Animated gold glow */
+    .hero-glow {
+      position: absolute;
+      top: -10%;
+      left: 50%;
+      width: 800px;
+      height: 600px;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(232,162,0,0.14), transparent 70%);
+      pointer-events: none;
+      animation: glow-breathe 6s ease-in-out infinite;
+      will-change: opacity, transform;
+    }
+
+    @keyframes glow-breathe {
+      0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+      50%       { opacity: 1;   transform: translateX(-50%) scale(1.08); }
+    }
+
+    /* BADGE */
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       background: var(--gold-dim);
-      border: 1px solid var(--gold-border);
+      border: 1px solid var(--gold-brd);
       color: var(--gold);
       font-size: 12.5px;
       font-weight: 600;
@@ -142,6 +192,12 @@
       margin-bottom: 28px;
       position: relative;
       z-index: 1;
+      animation: badge-in 0.8s var(--ease-out) both;
+    }
+
+    @keyframes badge-in {
+      from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .badge-dot {
@@ -150,26 +206,52 @@
       background: var(--green);
       border-radius: 50%;
       flex-shrink: 0;
-      animation: pulse-dot 2s infinite;
+      position: relative;
+    }
+    .badge-dot::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: var(--green);
+      opacity: 0.3;
+      animation: ping 2s ease-out infinite;
+    }
+    @keyframes ping {
+      0%   { transform: scale(1); opacity: 0.3; }
+      100% { transform: scale(2.5); opacity: 0; }
     }
 
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.35; }
-    }
-
+    /* Hero heading */
     .hero h1 {
-      font-size: clamp(36px, 9vw, 54px);
+      font-size: clamp(36px, 9.5vw, 56px);
       font-weight: 900;
-      letter-spacing: -2px;
-      line-height: 1.07;
-      max-width: 560px;
+      letter-spacing: -2.5px;
+      line-height: 1.06;
+      max-width: 580px;
       position: relative;
       z-index: 1;
       margin-bottom: 18px;
+      animation: hero-h1-in 0.9s var(--ease-out) 0.1s both;
+    }
+    @keyframes hero-h1-in {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .hero h1 .g { color: var(--gold); }
+    /* Gold shimmer text */
+    .hero-gold-word {
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold2) 40%, var(--gold) 80%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: text-shimmer 4s linear infinite 1s;
+    }
+    @keyframes text-shimmer {
+      from { background-position: 200% center; }
+      to   { background-position: -200% center; }
+    }
 
     .hero-sub {
       font-size: 16px;
@@ -179,6 +261,7 @@
       line-height: 1.7;
       position: relative;
       z-index: 1;
+      animation: hero-h1-in 0.9s var(--ease-out) 0.2s both;
     }
 
     .hero-actions {
@@ -188,6 +271,28 @@
       gap: 16px;
       position: relative;
       z-index: 1;
+      animation: hero-h1-in 0.9s var(--ease-out) 0.3s both;
+    }
+
+    /* Pulsing ring around main CTA */
+    .cta-wrap {
+      position: relative;
+    }
+    .cta-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--gold), var(--gold2), var(--gold));
+      background-size: 200% 200%;
+      animation: border-rotate 3s linear infinite;
+      z-index: -1;
+      opacity: 0.6;
+    }
+    @keyframes border-rotate {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     .hero-meta {
@@ -197,15 +302,52 @@
       font-size: 13px;
       color: var(--text-muted);
     }
+    .hero-meta .dot { width: 3px; height: 3px; background: var(--text-muted); border-radius: 50%; }
 
-    .hero-meta .dot {
-      width: 3px;
-      height: 3px;
-      background: var(--text-muted);
-      border-radius: 50%;
+    /* ════ LIVE TICKER ════ */
+    .ticker-wrap {
+      position: relative;
+      z-index: 1;
+      height: 22px;
+      margin-bottom: 32px;
+      overflow: hidden;
+      animation: hero-h1-in 0.9s var(--ease-out) 0.25s both;
     }
 
-    /* ─── STATS ─── */
+    .ticker-item {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-muted);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+      white-space: nowrap;
+    }
+    .ticker-item.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .ticker-item.leaving {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    .ticker-name   { color: var(--text-sec); font-weight: 600; }
+    .ticker-amount { color: var(--gold); font-weight: 700; }
+    .ticker-live   { display: inline-flex; align-items: center; gap: 5px; }
+    .ticker-live::before {
+      content: '';
+      width: 5px; height: 5px;
+      background: var(--green);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ════════════════════ STATS ════════════════════ */
     .stats {
       display: grid;
       grid-template-columns: repeat(3,1fr);
@@ -214,36 +356,30 @@
     }
 
     .stat {
-      padding: 24px 12px;
+      padding: 28px 12px;
       text-align: center;
       position: relative;
     }
-
     .stat + .stat::before {
       content: '';
       position: absolute;
-      left: 0; top: 22%; bottom: 22%;
+      left: 0; top: 25%; bottom: 25%;
       width: 1px;
       background: var(--border);
     }
-
     .stat-v {
       display: block;
-      font-size: 27px;
+      font-size: 28px;
       font-weight: 900;
       color: var(--gold);
       letter-spacing: -1px;
       line-height: 1;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
+      font-variant-numeric: tabular-nums;
     }
+    .stat-l { font-size: 11px; color: var(--text-muted); font-weight: 500; }
 
-    .stat-l {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    /* ─── SECTION ─── */
+    /* ════════════════════ SECTION ════════════════════ */
     .section {
       max-width: var(--max);
       margin: 0 auto;
@@ -254,7 +390,7 @@
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.13em;
+      letter-spacing: 0.14em;
       color: var(--gold);
       margin-bottom: 10px;
     }
@@ -269,13 +405,15 @@
 
     .sep { border: none; border-top: 1px solid var(--border); }
 
-    /* ─── CALC ─── */
+    /* ════════════════════ CALC ════════════════════ */
     .calc-box {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--r);
       padding: 26px;
+      transition: border-color 0.3s;
     }
+    .calc-box:focus-within { border-color: var(--gold-brd); }
 
     .presets {
       display: flex;
@@ -291,13 +429,13 @@
       font-family: inherit;
       font-size: 13px;
       font-weight: 600;
-      padding: 7px 15px;
+      padding: 7px 14px;
       border-radius: var(--r-xs);
       cursor: pointer;
-      transition: all 0.12s;
+      transition: all 0.15s var(--ease-out);
     }
-    .p-btn:hover        { border-color: var(--gold-border); color: var(--text); }
-    .p-btn.on           { background: var(--gold-dim); border-color: var(--gold-border); color: var(--gold); }
+    .p-btn:hover { border-color: var(--gold-brd); color: var(--text); }
+    .p-btn.on    { background: var(--gold-dim); border-color: var(--gold-brd); color: var(--gold); }
 
     .calc-row {
       display: grid;
@@ -312,7 +450,9 @@
       border: 1px solid var(--border);
       border-radius: var(--r-sm);
       padding: 13px 15px;
+      transition: border-color 0.2s;
     }
+    .calc-f:focus-within { border-color: rgba(255,255,255,0.15); }
     .calc-f.g { border-color: rgba(232,162,0,0.18); background: rgba(232,162,0,0.04); }
 
     .calc-f label {
@@ -335,20 +475,27 @@
       outline: none;
       width: 100%;
       letter-spacing: -0.5px;
-      padding: 0;
       -moz-appearance: textfield;
     }
     .calc-f input::-webkit-outer-spin-button,
     .calc-f input::-webkit-inner-spin-button { -webkit-appearance: none; }
 
-    .calc-f .out {
+    .calc-out {
       font-size: 22px;
       font-weight: 800;
       color: var(--gold);
       letter-spacing: -0.5px;
+      transition: color 0.15s;
+    }
+    .calc-out.flash {
+      animation: num-flash 0.35s var(--ease-out);
+    }
+    @keyframes num-flash {
+      0%   { color: var(--gold2); transform: scale(1.06); }
+      100% { color: var(--gold);  transform: scale(1); }
     }
 
-    .calc-arrow { color: var(--text-muted); font-size: 18px; text-align: center; }
+    .calc-arrow { color: var(--text-muted); font-size: 20px; text-align: center; }
 
     .calc-note {
       font-size: 12px;
@@ -358,12 +505,35 @@
     }
     .calc-note b { color: var(--text-sec); font-weight: 600; }
 
-    /* ─── FEATURES ─── */
-    .feats {
+    /* Savings badge */
+    .calc-save {
       display: flex;
-      flex-direction: column;
-      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--green);
+      font-weight: 600;
+      margin-bottom: 18px;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.3s, transform 0.3s;
     }
+    .calc-save.show { opacity: 1; transform: translateY(0); }
+    .calc-save::before {
+      content: '✓';
+      width: 16px;
+      height: 16px;
+      background: rgba(34,197,94,0.12);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+    }
+
+    /* ════════════════════ FEATURES ════════════════════ */
+    .feats { display: flex; flex-direction: column; gap: 10px; }
 
     .feat {
       background: var(--card);
@@ -373,9 +543,14 @@
       display: flex;
       gap: 16px;
       align-items: flex-start;
-      transition: border-color 0.2s;
+      transition: border-color 0.25s, transform 0.25s var(--ease-out), box-shadow 0.25s;
+      cursor: default;
     }
-    .feat:hover { border-color: rgba(232,162,0,0.2); }
+    .feat:hover {
+      border-color: rgba(232,162,0,0.22);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
 
     .feat-icon {
       width: 42px;
@@ -387,28 +562,24 @@
       justify-content: center;
       color: var(--gold);
       flex-shrink: 0;
+      transition: background 0.25s, transform 0.25s var(--ease-out);
     }
+    .feat:hover .feat-icon { background: var(--gold-glow); transform: scale(1.05); }
 
     .feat-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
     .feat-desc  { font-size: 14px; color: var(--text-sec); line-height: 1.55; }
 
-    /* ─── STEPS ─── */
+    /* ════════════════════ STEPS ════════════════════ */
     .steps { display: flex; flex-direction: column; }
 
-    .step {
-      display: flex;
-      gap: 18px;
-      position: relative;
-    }
+    .step { display: flex; gap: 18px; position: relative; }
 
     .step:not(:last-child)::before {
       content: '';
       position: absolute;
-      left: 19px;
-      top: 42px;
-      bottom: -4px;
+      left: 19px; top: 42px; bottom: -4px;
       width: 2px;
-      background: linear-gradient(to bottom, var(--border), transparent);
+      background: linear-gradient(to bottom, var(--gold-brd), transparent);
     }
 
     .step-n {
@@ -416,7 +587,7 @@
       height: 40px;
       border-radius: 50%;
       background: var(--gold-dim);
-      border: 1.5px solid var(--gold-border);
+      border: 1.5px solid var(--gold-brd);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -428,13 +599,12 @@
       z-index: 1;
     }
 
-    .step-body { padding: 8px 0 40px; }
+    .step-body  { padding: 8px 0 40px; }
     .step:last-child .step-body { padding-bottom: 0; }
-
     .step-title { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
     .step-desc  { font-size: 14px; color: var(--text-sec); }
 
-    /* ─── PAYMENTS ─── */
+    /* ════════════════════ PAYMENTS ════════════════════ */
     .pay-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -447,11 +617,12 @@
       border-radius: var(--r);
       padding: 26px 18px;
       text-align: center;
+      transition: border-color 0.25s, transform 0.25s var(--ease-out);
     }
+    .pay-card:hover { border-color: var(--gold-brd); transform: translateY(-2px); }
 
     .pay-ico {
-      width: 52px;
-      height: 52px;
+      width: 52px; height: 52px;
       background: var(--gold-dim);
       border-radius: 14px;
       display: flex;
@@ -460,11 +631,10 @@
       margin: 0 auto 14px;
       color: var(--gold);
     }
-
     .pay-title { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
     .pay-sub   { font-size: 12px; color: var(--text-muted); }
 
-    /* ─── REVIEWS ─── */
+    /* ════════════════════ REVIEWS ════════════════════ */
     .reviews { display: flex; flex-direction: column; gap: 10px; }
 
     .review {
@@ -472,7 +642,9 @@
       border: 1px solid var(--border);
       border-radius: var(--r);
       padding: 20px 22px;
+      transition: border-color 0.25s, transform 0.25s var(--ease-out);
     }
+    .review:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-1px); }
 
     .rev-top {
       display: flex;
@@ -482,26 +654,22 @@
     }
 
     .ava {
-      width: 38px;
-      height: 38px;
+      width: 38px; height: 38px;
       border-radius: 50%;
-      background: var(--card-2);
+      background: var(--card2);
       border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800;
       color: var(--gold);
       flex-shrink: 0;
     }
 
-    .rname { font-size: 14px; font-weight: 700; }
-    .rdate { font-size: 12px; color: var(--text-muted); }
+    .rname  { font-size: 14px; font-weight: 700; }
+    .rdate  { font-size: 12px; color: var(--text-muted); }
     .rstars { margin-left: auto; color: var(--gold); font-size: 13px; letter-spacing: 1px; }
     .rtext  { font-size: 14px; color: var(--text-sec); line-height: 1.6; }
 
-    /* ─── FAQ ─── */
+    /* ════════════════════ FAQ ════════════════════ */
     .faqs { display: flex; flex-direction: column; gap: 2px; }
 
     .faq-item {
@@ -509,7 +677,9 @@
       border: 1px solid var(--border);
       border-radius: var(--r-sm);
       overflow: hidden;
+      transition: border-color 0.2s;
     }
+    .faq-item.open { border-color: rgba(232,162,0,0.16); }
 
     .faq-q {
       width: 100%;
@@ -532,30 +702,32 @@
     .faq-ico {
       flex-shrink: 0;
       color: var(--text-muted);
-      transition: transform 0.25s, color 0.25s;
+      transition: transform 0.3s var(--ease-out), color 0.2s;
     }
     .faq-item.open .faq-ico { transform: rotate(180deg); color: var(--gold); }
 
     .faq-a {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.35s var(--ease-out);
     }
-    .faq-item.open .faq-a { max-height: 300px; }
-
+    .faq-item.open .faq-a { grid-template-rows: 1fr; }
     .faq-a-in {
-      padding: 0 20px 18px;
+      overflow: hidden;
+      padding: 0 20px;
       font-size: 14px;
       color: var(--text-sec);
       line-height: 1.65;
+      transition: padding 0.35s var(--ease-out);
     }
+    .faq-item.open .faq-a-in { padding: 0 20px 18px; }
 
-    /* ─── CTA BLOCK ─── */
+    /* ════════════════════ CTA BLOCK ════════════════════ */
     .cta-box {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 24px;
-      padding: 52px 28px;
+      padding: 56px 28px;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -563,19 +735,19 @@
 
     .cta-glow {
       position: absolute;
-      top: -60px; left: 50%;
+      top: -80px; left: 50%;
       transform: translateX(-50%);
-      width: 600px;
-      height: 300px;
-      background: radial-gradient(ellipse, rgba(232,162,0,0.1) 0%, transparent 70%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(232,162,0,0.12) 0%, transparent 65%);
       pointer-events: none;
+      animation: glow-breathe 5s ease-in-out infinite;
     }
 
     .cta-box h2     { margin-bottom: 12px; position: relative; }
-    .cta-box p      { color: var(--text-sec); font-size: 15px; margin-bottom: 32px; position: relative; }
+    .cta-box p      { color: var(--text-sec); font-size: 15px; margin-bottom: 36px; position: relative; }
     .cta-box .btn   { position: relative; }
 
-    /* ─── FOOTER ─── */
+    /* ════════════════════ FOOTER ════════════════════ */
     footer {
       border-top: 1px solid var(--border);
       padding: 30px 24px;
@@ -584,27 +756,33 @@
       color: var(--text-muted);
       line-height: 1.9;
     }
-    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
     footer a:hover { color: var(--text-sec); }
 
-    /* ─── STICKY CTA ─── */
+    /* ════════════════════ STICKY CTA ════════════════════ */
     .sticky-cta {
       display: none;
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      padding: 10px 16px 20px;
+      padding: 10px 16px 22px;
       background: linear-gradient(to top, var(--bg) 55%, transparent);
       z-index: 100;
       pointer-events: none;
+      transform: translateY(100%);
+      transition: transform 0.4s var(--ease-out);
     }
-    .sticky-cta .btn {
-      pointer-events: all;
-      box-shadow: 0 8px 32px rgba(232,162,0,0.25);
-    }
+    .sticky-cta.shown { transform: translateY(0); }
+    .sticky-cta .btn  { pointer-events: all; }
 
     @media (max-width: 600px) {
       .sticky-cta { display: block; }
     }
+
+    /* ════════════════════ SCROLLBAR ════════════════════ */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.14); }
   </style>
 </head>
 <body>
@@ -617,15 +795,17 @@
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-dots"></div>
+  <div class="hero-glow"></div>
 
   <div class="badge">
     <span class="badge-dot"></span>
     Бот онлайн · 10 000+ покупателей
   </div>
 
-  <h1>Голда для&nbsp;<span class="g">Standoff&nbsp;2</span><br>без переплат</h1>
+  <!-- Live ticker -->
+  <div class="ticker-wrap" id="ticker"></div>
+
+  <h1>Голда для&nbsp;<span class="hero-gold-word">Standoff&nbsp;2</span><br>без переплат</h1>
 
   <p class="hero-sub">
     Зачисление за 2 минуты. Курс 0.67₽&nbsp;за&nbsp;1G —
@@ -633,17 +813,15 @@
   </p>
 
   <div class="hero-actions">
-    <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-lg">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-      </svg>
-      Открыть бота
-    </a>
+    <div class="cta-wrap">
+      <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-lg">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        Открыть бота
+      </a>
+    </div>
     <div class="hero-meta">
-      <span>СБП · Карта РФ</span>
-      <span class="dot"></span>
-      <span>USDT</span>
-      <span class="dot"></span>
+      <span>СБП · Карта РФ</span><span class="dot"></span>
+      <span>USDT</span><span class="dot"></span>
       <span>Без комиссии</span>
     </div>
   </div>
@@ -651,26 +829,26 @@
 
 <!-- STATS -->
 <div class="stats">
-  <div class="stat">
-    <span class="stat-v">10K+</span>
+  <div class="stat r">
+    <span class="stat-v" data-count="10000" data-suffix="K+">0</span>
     <span class="stat-l">покупателей</span>
   </div>
-  <div class="stat">
-    <span class="stat-v">5M+</span>
+  <div class="stat r d1">
+    <span class="stat-v" data-count="5" data-suffix="M+">0</span>
     <span class="stat-l">голды продано</span>
   </div>
-  <div class="stat">
-    <span class="stat-v">2 мин</span>
+  <div class="stat r d2">
+    <span class="stat-v" data-count="2" data-suffix=" мин">0</span>
     <span class="stat-l">зачисление</span>
   </div>
 </div>
 
 <!-- CALCULATOR -->
 <section class="section">
-  <div class="s-tag">Калькулятор</div>
-  <h2>Сколько голды ты получишь?</h2>
+  <div class="s-tag r">Калькулятор</div>
+  <h2 class="r d1">Сколько голды ты получишь?</h2>
 
-  <div class="calc-box">
+  <div class="calc-box r d2">
     <div class="presets">
       <button class="p-btn" data-v="200">200₽</button>
       <button class="p-btn" data-v="500">500₽</button>
@@ -687,11 +865,12 @@
       <div class="calc-arrow">→</div>
       <div class="calc-f g">
         <label>Голда (G)</label>
-        <div class="out" id="gold-out">1 492</div>
+        <div class="calc-out" id="gold-out">1 492</div>
       </div>
     </div>
 
-    <p class="calc-note">Курс <b>0.67₽ за 1G</b> · комиссия маркета уже включена — платишь только за голду</p>
+    <p class="calc-note">Курс <b>0.67₽ за 1G</b> · комиссия маркета уже учтена — платишь только за голду</p>
+    <div class="calc-save" id="calc-save">Комиссия маркета покрыта — платишь меньше рыночной цены</div>
 
     <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-full">
       Купить в Telegram →
@@ -703,15 +882,13 @@
 
 <!-- WHY -->
 <section class="section">
-  <div class="s-tag">Преимущества</div>
-  <h2>Почему выбирают TGold</h2>
+  <div class="s-tag r">Преимущества</div>
+  <h2 class="r d1">Почему выбирают TGold</h2>
 
   <div class="feats">
-    <div class="feat">
+    <div class="feat r d1">
       <div class="feat-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-        </svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       </div>
       <div>
         <div class="feat-title">Зачисление за 2 минуты</div>
@@ -719,12 +896,9 @@
       </div>
     </div>
 
-    <div class="feat">
+    <div class="feat r d2">
       <div class="feat-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <line x1="12" y1="1" x2="12" y2="23"/>
-          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-        </svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
       </div>
       <div>
         <div class="feat-title">Курс ниже, чем в магазине игры</div>
@@ -732,23 +906,19 @@
       </div>
     </div>
 
-    <div class="feat">
+    <div class="feat r d3">
       <div class="feat-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        </svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       </div>
       <div>
         <div class="feat-title">Аккаунт в безопасности</div>
-        <div class="feat-desc">Передача только через официальный маркет Standoff 2. Нам нужен только никнейм — пароль не запрашиваем никогда.</div>
+        <div class="feat-desc">Передача только через официальный маркет Standoff 2. Нужен только никнейм — пароль не запрашиваем никогда.</div>
       </div>
     </div>
 
-    <div class="feat">
+    <div class="feat r d4">
       <div class="feat-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        </svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
       <div>
         <div class="feat-title">Поддержка 24/7</div>
@@ -762,29 +932,29 @@
 
 <!-- HOW IT WORKS -->
 <section class="section">
-  <div class="s-tag">Инструкция</div>
-  <h2>Три шага — и голда у тебя</h2>
+  <div class="s-tag r">Инструкция</div>
+  <h2 class="r d1">Три шага — и голда у тебя</h2>
 
   <div class="steps">
-    <div class="step">
+    <div class="step r d1">
       <div class="step-n">1</div>
       <div class="step-body">
         <div class="step-title">Открой бота в Telegram</div>
         <div class="step-desc">Нажми «Открыть бота» — никакой регистрации, просто Telegram.</div>
       </div>
     </div>
-    <div class="step">
+    <div class="step r d2">
       <div class="step-n">2</div>
       <div class="step-body">
         <div class="step-title">Выбери количество и оплати</div>
         <div class="step-desc">Укажи никнейм в игре, выбери сумму и оплати через СБП, карту или USDT.</div>
       </div>
     </div>
-    <div class="step">
+    <div class="step r d3">
       <div class="step-n">3</div>
       <div class="step-body">
         <div class="step-title">Получи голду в игре</div>
-        <div class="step-desc">Зачисление через официальный маркет Standoff 2. Среднее время — 2 минуты.</div>
+        <div class="step-desc">Зачисление через официальный маркет. Среднее время — 2 минуты.</div>
       </div>
     </div>
   </div>
@@ -794,26 +964,20 @@
 
 <!-- PAYMENTS -->
 <section class="section">
-  <div class="s-tag">Оплата</div>
-  <h2>Удобные способы</h2>
+  <div class="s-tag r">Оплата</div>
+  <h2 class="r d1">Удобные способы</h2>
 
   <div class="pay-grid">
-    <div class="pay-card">
+    <div class="pay-card r d1">
       <div class="pay-ico">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="2" y="5" width="20" height="14" rx="2"/>
-          <line x1="2" y1="10" x2="22" y2="10"/>
-        </svg>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
       </div>
       <div class="pay-title">СБП · Карта РФ</div>
       <div class="pay-sub">Любой банк · мгновенно</div>
     </div>
-    <div class="pay-card">
+    <div class="pay-card r d2">
       <div class="pay-ico">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M8 12h8M12 8v8"/>
-        </svg>
+        <svg width="26" height="26" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0zm0 5.333c5.891 0 10.667 4.776 10.667 10.667S21.891 26.667 16 26.667 5.333 21.891 5.333 16 10.109 5.333 16 5.333zm0 2.667c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zm1.333 2.667v1.472c1.48.32 2.667 1.4 2.667 2.861 0 .736-.298 1.4-.8 1.888-.502.489-1.224.8-2.067.88v2.347h-1.333v-2.347c-1.8-.16-3.067-1.36-3.067-2.88h1.334c0 .8.667 1.467 1.733 1.467.533 0 .96-.16 1.227-.4.267-.24.4-.533.4-.88 0-.347-.133-.613-.4-.853-.267-.24-.694-.4-1.227-.4-1.24 0-2.4-.88-2.4-2.133 0-1.12.907-2.027 2.133-2.267V10.667h1.8z"/></svg>
       </div>
       <div class="pay-title">USDT</div>
       <div class="pay-sub">TRC-20 / ERC-20</div>
@@ -825,41 +989,32 @@
 
 <!-- REVIEWS -->
 <section class="section">
-  <div class="s-tag">Отзывы</div>
-  <h2>Говорят покупатели</h2>
+  <div class="s-tag r">Отзывы</div>
+  <h2 class="r d1">Говорят покупатели</h2>
 
   <div class="reviews">
-    <div class="review">
+    <div class="review r d1">
       <div class="rev-top">
         <div class="ava">К</div>
-        <div>
-          <div class="rname">Кирилл</div>
-          <div class="rdate">3 дня назад</div>
-        </div>
+        <div><div class="rname">Кирилл</div><div class="rdate">3 дня назад</div></div>
         <div class="rstars">★★★★★</div>
       </div>
       <div class="rtext">Брал 3000G — пришло буквально за минуту. Уже третий раз покупаю, всё чётко и без вопросов</div>
     </div>
 
-    <div class="review">
+    <div class="review r d2">
       <div class="rev-top">
         <div class="ava">Д</div>
-        <div>
-          <div class="rname">Даниил</div>
-          <div class="rdate">неделю назад</div>
-        </div>
+        <div><div class="rname">Даниил</div><div class="rdate">неделю назад</div></div>
         <div class="rstars">★★★★★</div>
       </div>
       <div class="rtext">Боялся что кинут — не кинули. Заплатил через СБП, голда пришла быстро. Цена реально ниже чем везде</div>
     </div>
 
-    <div class="review">
+    <div class="review r d3">
       <div class="rev-top">
         <div class="ava">А</div>
-        <div>
-          <div class="rname">Артём</div>
-          <div class="rdate">2 недели назад</div>
-        </div>
+        <div><div class="rname">Артём</div><div class="rdate">2 недели назад</div></div>
         <div class="rstars">★★★★★</div>
       </div>
       <div class="rtext">Купил 5000G для скинов — пришло за пару минут. Бот удобный, всё понятно с первого раза</div>
@@ -871,73 +1026,61 @@
 
 <!-- FAQ -->
 <section class="section">
-  <div class="s-tag">FAQ</div>
-  <h2>Частые вопросы</h2>
+  <div class="s-tag r">FAQ</div>
+  <h2 class="r d1">Частые вопросы</h2>
 
   <div class="faqs">
-    <div class="faq-item open">
+    <div class="faq-item open r d1">
       <button class="faq-q" aria-expanded="true">
         Как происходит передача голды?
         <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="faq-a">
-        <div class="faq-a-in">Через официальный внутриигровой маркет Standoff 2. Ты выставляешь предмет на продажу, мы покупаем — голда зачисляется автоматически. Никакого доступа к аккаунту нам не нужно.</div>
-      </div>
+      <div class="faq-a"><div class="faq-a-in">Через официальный внутриигровой маркет Standoff 2. Ты выставляешь предмет на продажу, мы покупаем — голда зачисляется автоматически. Никакого доступа к аккаунту нам не нужно.</div></div>
     </div>
 
-    <div class="faq-item">
+    <div class="faq-item r d2">
       <button class="faq-q" aria-expanded="false">
         Безопасно ли это для аккаунта?
         <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="faq-a">
-        <div class="faq-a-in">Да, полностью. Мы используем стандартный маркет игры — это обычная торговля между игроками. Нам нужен только твой никнейм. Пароль и данные аккаунта не нужны никогда.</div>
-      </div>
+      <div class="faq-a"><div class="faq-a-in">Да, полностью. Мы используем стандартный маркет игры — это обычная торговля между игроками. Нам нужен только твой никнейм. Пароль и данные аккаунта не нужны никогда.</div></div>
     </div>
 
-    <div class="faq-item">
+    <div class="faq-item r d3">
       <button class="faq-q" aria-expanded="false">
         Как долго ждать зачисление?
         <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="faq-a">
-        <div class="faq-a-in">В среднем 2–5 минут. Иногда быстрее. В редких случаях до 10 минут при загрузке серверов игры.</div>
-      </div>
+      <div class="faq-a"><div class="faq-a-in">В среднем 2–5 минут. Иногда быстрее. В редких случаях до 10 минут при загрузке серверов игры.</div></div>
     </div>
 
-    <div class="faq-item">
+    <div class="faq-item r d4">
       <button class="faq-q" aria-expanded="false">
         Почему цена ниже, чем в самой игре?
         <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="faq-a">
-        <div class="faq-a-in">Официальный магазин игры берёт комиссию маркета с покупателя. Мы берём её на себя — поэтому ты получаешь больше голды за те же деньги.</div>
-      </div>
+      <div class="faq-a"><div class="faq-a-in">Официальный магазин игры берёт комиссию маркета с покупателя. Мы берём её на себя — поэтому ты получаешь больше голды за те же деньги.</div></div>
     </div>
 
-    <div class="faq-item">
+    <div class="faq-item r d5">
       <button class="faq-q" aria-expanded="false">
         Что если голда не пришла?
         <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="faq-a">
-        <div class="faq-a-in">Напиши в поддержку бота — разберёмся в течение нескольких минут и либо дошлём голду, либо вернём деньги.</div>
-      </div>
+      <div class="faq-a"><div class="faq-a-in">Напиши в поддержку бота — разберёмся за несколько минут и либо дошлём голду, либо вернём деньги.</div></div>
     </div>
   </div>
 </section>
 
 <!-- FINAL CTA -->
-<section class="section" style="padding-bottom: 100px;">
+<section class="section r" style="padding-bottom: 100px;">
   <div class="cta-box">
     <div class="cta-glow"></div>
     <div class="s-tag" style="position:relative">Готов?</div>
     <h2>Начни прямо сейчас</h2>
     <p>Открой бота в Telegram и получи голду за 2 минуты</p>
     <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-lg">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-      </svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
       Купить голду в Telegram
     </a>
   </div>
@@ -954,24 +1097,120 @@
 <!-- STICKY CTA (mobile) -->
 <div class="sticky-cta" id="sticky">
   <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-full btn-lg">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-    </svg>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
     Купить голду →
   </a>
 </div>
 
 <script>
-  // ── CALCULATOR ──
-  const rubIn  = document.getElementById('rub');
-  const goldEl = document.getElementById('gold-out');
-  const RATE   = 0.67;
+  /* ── LIVE TICKER ── */
+  const ORDERS = [
+    { name: 'Артём',   gold: '2 000G' },
+    { name: 'Дмитрий', gold: '5 000G' },
+    { name: 'Никита',  gold: '1 500G' },
+    { name: 'Иван',    gold: '3 000G' },
+    { name: 'Данил',   gold: '750G'   },
+    { name: 'Макс',    gold: '10 000G'},
+    { name: 'Серёга',  gold: '2 500G' },
+    { name: 'Кирилл',  gold: '4 000G' },
+  ];
+  const TIMES = ['только что', '1 мин назад', '2 мин назад', '3 мин назад', '5 мин назад'];
 
-  function calc() {
+  const ticker = document.getElementById('ticker');
+  let tickerIdx = 0;
+  let currentEl = null;
+
+  function buildTickerItem(o, t) {
+    const el = document.createElement('div');
+    el.className = 'ticker-item';
+    el.innerHTML = `<span class="ticker-live"></span><span class="ticker-name">${o.name}</span>&nbsp;купил&nbsp;<span class="ticker-amount">${o.gold}</span>&nbsp;·&nbsp;${t}`;
+    return el;
+  }
+
+  function nextTick() {
+    const o = ORDERS[tickerIdx % ORDERS.length];
+    const t = TIMES[tickerIdx % TIMES.length];
+    tickerIdx++;
+
+    const next = buildTickerItem(o, t);
+    ticker.appendChild(next);
+
+    requestAnimationFrame(() => {
+      if (currentEl) currentEl.classList.add('leaving');
+      setTimeout(() => {
+        if (currentEl) currentEl.remove();
+        currentEl = next;
+        next.classList.add('active');
+      }, 500);
+    });
+  }
+
+  nextTick();
+  setInterval(nextTick, 3500);
+
+  /* ── SCROLL REVEAL ── */
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); revealObs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.r').forEach(el => revealObs.observe(el));
+
+  /* ── STATS COUNTER ── */
+  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+  function animateCount(el) {
+    const target = parseInt(el.dataset.count, 10);
+    const suffix = el.dataset.suffix || '';
+    const duration = 1400;
+    const start = performance.now();
+
+    const fmt = (n) => {
+      if (target >= 1000) return Math.floor(n / 1000) + (n >= target ? suffix : 'K+');
+      return Math.floor(n) + (n >= target ? suffix : '');
+    };
+
+    const tick = (now) => {
+      const t = Math.min((now - start) / duration, 1);
+      const val = easeOutCubic(t) * target;
+      el.textContent = t < 1 ? fmt(val) : (target >= 1000 ? (target/1000) : target) + suffix;
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  const statObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const v = e.target.querySelector('.stat-v');
+        if (v) animateCount(v);
+        statObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.stat').forEach(el => statObs.observe(el));
+
+  /* ── CALCULATOR ── */
+  const rubIn   = document.getElementById('rub');
+  const goldEl  = document.getElementById('gold-out');
+  const saveEl  = document.getElementById('calc-save');
+  const RATE    = 0.67;
+  let flashTimer;
+
+  function calc(animate = true) {
     const v = parseFloat(rubIn.value) || 0;
-    goldEl.textContent = v > 0
-      ? Math.floor(v / RATE).toLocaleString('ru-RU')
-      : '—';
+    const g = v > 0 ? Math.floor(v / RATE) : 0;
+
+    goldEl.textContent = g > 0 ? g.toLocaleString('ru-RU') : '—';
+
+    if (animate && v > 0) {
+      clearTimeout(flashTimer);
+      goldEl.classList.remove('flash');
+      flashTimer = setTimeout(() => goldEl.classList.add('flash'), 10);
+      goldEl.addEventListener('animationend', () => goldEl.classList.remove('flash'), { once: true });
+    }
+
+    saveEl.classList.toggle('show', v > 0);
   }
 
   rubIn.addEventListener('input', () => {
@@ -988,9 +1227,9 @@
     });
   });
 
-  calc();
+  calc(false);
 
-  // ── FAQ ──
+  /* ── FAQ ── */
   document.querySelectorAll('.faq-q').forEach(btn => {
     btn.addEventListener('click', () => {
       const item   = btn.closest('.faq-item');
@@ -999,22 +1238,37 @@
         i.classList.remove('open');
         i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
       });
-      if (!isOpen) {
-        item.classList.add('open');
-        btn.setAttribute('aria-expanded', 'true');
-      }
+      if (!isOpen) { item.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
     });
   });
 
-  // ── STICKY CTA — hide near footer ──
-  const sticky = document.getElementById('sticky');
-  const footer = document.querySelector('footer');
+  /* ── STICKY CTA ── */
+  const sticky  = document.getElementById('sticky');
+  const footer  = document.querySelector('footer');
+  let stickyOn  = false;
 
-  const obs = new IntersectionObserver(entries => {
-    sticky.style.display = entries[0].isIntersecting ? 'none' : '';
-  }, { rootMargin: '100px' });
+  const stickyShow = new IntersectionObserver(([e]) => {
+    const shouldShow = !e.isIntersecting;
+    if (shouldShow !== stickyOn) {
+      stickyOn = shouldShow;
+      sticky.classList.toggle('shown', stickyOn);
+    }
+  });
+  stickyShow.observe(document.querySelector('.hero'));
 
-  obs.observe(footer);
+  const stickyHide = new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) { sticky.classList.remove('shown'); stickyOn = false; }
+    else if (!sticky.classList.contains('shown')) { sticky.classList.add('shown'); stickyOn = true; }
+  });
+  stickyHide.observe(footer);
+
+  /* ── NAV SCROLL STATE ── */
+  const nav = document.querySelector('.nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = window.scrollY > 40
+      ? 'rgba(7,8,13,0.95)'
+      : 'rgba(7,8,13,0.7)';
+  }, { passive: true });
 </script>
 </body>
 </html>

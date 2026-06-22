@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TGold — Голда для Standoff 2</title>
-  <meta name="description" content="Купить голду Standoff 2 за 2 минуты. Курс 0.67₽/G. СБП, карта РФ, USDT.">
-  <meta property="og:title" content="TGold — Голда для Standoff 2">
-  <meta property="og:description" content="Зачисление за 2 минуты. Курс 0.67₽/G. Берём комиссию маркета на себя.">
+  <meta name="description" content="Купить голду Standoff 2 — 0.67₽/G, зачисление за 2 минуты. СБП, USDT.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -14,32 +12,27 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:         #07080D;
-      --surface:    #0A0B17;
-      --card:       #0E0F1E;
-      --card2:      #121325;
-      --border:     rgba(255,255,255,0.06);
-      --gold:       #E8A200;
-      --gold2:      #FFC233;
-      --gold-dim:   rgba(232,162,0,0.09);
-      --gold-glow:  rgba(232,162,0,0.18);
-      --gold-brd:   rgba(232,162,0,0.22);
-      --text:       #EEEEF5;
-      --text-sec:   #8585A0;
-      --text-muted: #4C4C68;
-      --green:      #22C55E;
-      --r:          18px;
-      --r-sm:       12px;
-      --r-xs:       8px;
-      --max:        660px;
-      --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-std:   cubic-bezier(0.4, 0, 0.2, 1);
+      --bg:        #060508;
+      --surface:   #0B0910;
+      --card:      #0F0D16;
+      --border:    rgba(255,255,255,0.07);
+      --gold:      #F0A800;
+      --gold-2:    #FFD166;
+      --gold-dim:  rgba(240,168,0,0.08);
+      --gold-brd:  rgba(240,168,0,0.2);
+      --text:      #EDEAF5;
+      --sec:       #76748E;
+      --muted:     #42405A;
+      --green:     #22C55E;
+      --r:         16px;
+      --max:       640px;
+      --ease:      cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     html { scroll-behavior: smooth; overflow-x: hidden; }
 
     body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.55;
@@ -47,136 +40,206 @@
       overflow-x: hidden;
     }
 
-    /* ════════════════════ NAV ════════════════════ */
+    /* ── CURSOR (desktop only) ── */
+    @media (pointer: fine) {
+      * { cursor: none !important; }
+    }
+
+    #cur, #cur-t {
+      display: none;
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      will-change: left, top;
+    }
+
+    @media (pointer: fine) {
+      #cur {
+        display: block;
+        width: 8px; height: 8px;
+        background: var(--gold);
+        transition: width .15s, height .15s, opacity .15s;
+      }
+      #cur.big { width: 12px; height: 12px; }
+      #cur-t {
+        display: block;
+        width: 30px; height: 30px;
+        border: 1px solid rgba(240,168,0,0.35);
+        transition: width .2s, height .2s, border-color .2s;
+      }
+      #cur-t.big { width: 46px; height: 46px; border-color: rgba(240,168,0,0.55); }
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 800;
+      max-width: 270px;
+      pointer-events: none;
+      transform: translateX(calc(-100% - 24px));
+      transition: transform 0.45s var(--ease);
+      backdrop-filter: blur(12px);
+    }
+    .toast.on { transform: translateX(0); }
+
+    .toast-ava {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--gold-dim);
+      border: 1px solid var(--gold-brd);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .toast-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+    .toast-sub  { font-size: 12px; color: var(--sec); }
+
+    /* ── NAV ── */
     .nav {
       position: fixed;
       inset: 0 0 auto;
-      z-index: 200;
-      padding: 12px 20px;
+      z-index: 300;
+      padding: 14px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(7,8,13,0.7);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--border);
-      transition: background 0.3s;
+      transition: background 0.3s, border-color 0.3s;
+      border-bottom: 1px solid transparent;
+    }
+    .nav.scrolled {
+      background: rgba(6,5,8,0.88);
+      border-color: var(--border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
     .logo {
-      font-size: 20px;
-      font-weight: 900;
+      font-size: 20px; font-weight: 900;
       letter-spacing: -0.6px;
       color: var(--text);
       text-decoration: none;
     }
-    .logo span { color: var(--gold); }
+    .logo em { color: var(--gold); font-style: normal; }
 
-    /* ════════════════════ BUTTONS ════════════════════ */
+    /* ── BUTTONS ── */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      background: var(--gold);
-      color: #000;
       font-family: inherit;
       font-weight: 700;
       font-size: 15px;
       text-decoration: none;
-      padding: 12px 22px;
-      border-radius: var(--r-sm);
       border: none;
       cursor: pointer;
-      transition: opacity 0.13s, transform 0.13s, box-shadow 0.2s;
-      white-space: nowrap;
-      line-height: 1;
       position: relative;
       overflow: hidden;
+      transition: opacity .13s, transform .13s, box-shadow .2s;
+      white-space: nowrap;
+      line-height: 1;
     }
 
-    /* Shimmer effect */
-    .btn::after {
+    .btn-gold {
+      background: var(--gold);
+      color: #000;
+      padding: 13px 24px;
+      border-radius: 12px;
+    }
+    .btn-gold:hover {
+      opacity: .88;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 32px rgba(240,168,0,0.28);
+    }
+    .btn-gold:active { transform: translateY(0); }
+
+    .btn-gold::after {
       content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
-      transform: translateX(-100%);
+      position: absolute; inset: 0;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.28) 50%, transparent 70%);
+      transform: translateX(-120%);
       transition: transform 0s;
     }
-    .btn:hover::after {
-      transform: translateX(100%);
-      transition: transform 0.55s var(--ease-std);
+    .btn-gold:hover::after {
+      transform: translateX(120%);
+      transition: transform 0.5s ease;
     }
-    .btn:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-      box-shadow: 0 8px 28px rgba(232,162,0,0.3);
-    }
-    .btn:active { transform: translateY(0); opacity: 1; box-shadow: none; }
 
-    .btn-lg   { padding: 17px 38px; font-size: 17px; border-radius: 16px; }
+    .btn-lg   { padding: 18px 40px; font-size: 17px; border-radius: 16px; }
     .btn-sm   { padding: 9px 18px; font-size: 13px; border-radius: 10px; }
     .btn-full { width: 100%; }
 
-    /* ════════════════════ REVEAL ANIMATIONS ════════════════════ */
-    .r {
+    /* ── REVEAL ── */
+    .rv {
       opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.65s var(--ease-out), transform 0.65s var(--ease-out);
+      transform: translateY(24px);
+      transition: opacity .6s var(--ease), transform .6s var(--ease);
     }
-    .r.on { opacity: 1; transform: translateY(0); }
-    .r.d1 { transition-delay: 0.08s; }
-    .r.d2 { transition-delay: 0.16s; }
-    .r.d3 { transition-delay: 0.24s; }
-    .r.d4 { transition-delay: 0.32s; }
-    .r.d5 { transition-delay: 0.40s; }
+    .rv.on { opacity: 1; transform: translateY(0); }
+    .rv.d1 { transition-delay: .08s; }
+    .rv.d2 { transition-delay: .16s; }
+    .rv.d3 { transition-delay: .24s; }
+    .rv.d4 { transition-delay: .32s; }
 
     /* ════════════════════ HERO ════════════════════ */
     .hero {
+      position: relative;
       min-height: 100svh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 130px 24px 90px;
-      position: relative;
+      padding: 120px 24px 100px;
       overflow: hidden;
     }
 
-    /* Dot grid */
-    .hero::before {
-      content: '';
+    /* Giant background word */
+    .hero-bg-word {
       position: absolute;
       inset: 0;
-      background-image: radial-gradient(rgba(255,255,255,0.028) 1px, transparent 1px);
-      background-size: 26px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(130px, 42vw, 340px);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      color: rgba(240, 168, 0, 0.038);
       pointer-events: none;
-      mask-image: radial-gradient(ellipse 85% 70% at 50% 40%, black, transparent);
-      -webkit-mask-image: radial-gradient(ellipse 85% 70% at 50% 40%, black, transparent);
+      user-select: none;
+      line-height: 1;
+      overflow: hidden;
     }
 
-    /* Animated gold glow */
+    /* Radial glow */
     .hero-glow {
       position: absolute;
-      top: -10%;
-      left: 50%;
-      width: 800px;
-      height: 600px;
+      top: -5%; left: 50%;
+      width: 900px; height: 700px;
       transform: translateX(-50%);
-      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(232,162,0,0.14), transparent 70%);
+      background: radial-gradient(ellipse 55% 45% at 50% 45%, rgba(240,168,0,0.11), transparent 70%);
       pointer-events: none;
-      animation: glow-breathe 6s ease-in-out infinite;
-      will-change: opacity, transform;
+      animation: glow-breathe 7s ease-in-out infinite;
     }
-
     @keyframes glow-breathe {
-      0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
-      50%       { opacity: 1;   transform: translateX(-50%) scale(1.08); }
+      0%, 100% { opacity: .8; transform: translateX(-50%) scale(1); }
+      50%       { opacity: 1;  transform: translateX(-50%) scale(1.07); }
     }
 
-    /* BADGE */
+    /* Badge */
     .badge {
       display: inline-flex;
       align-items: center;
@@ -184,25 +247,23 @@
       background: var(--gold-dim);
       border: 1px solid var(--gold-brd);
       color: var(--gold);
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 600;
-      letter-spacing: 0.01em;
-      padding: 6px 14px;
+      letter-spacing: .02em;
+      padding: 5px 14px;
       border-radius: 100px;
       margin-bottom: 28px;
       position: relative;
       z-index: 1;
-      animation: badge-in 0.8s var(--ease-out) both;
+      animation: badge-in .8s var(--ease) both;
     }
-
     @keyframes badge-in {
-      from { opacity: 0; transform: translateY(-10px) scale(0.95); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     .badge-dot {
-      width: 6px;
-      height: 6px;
+      width: 6px; height: 6px;
       background: var(--green);
       border-radius: 50%;
       flex-shrink: 0;
@@ -210,21 +271,20 @@
     }
     .badge-dot::after {
       content: '';
-      position: absolute;
-      inset: -3px;
+      position: absolute; inset: -3px;
       border-radius: 50%;
       background: var(--green);
-      opacity: 0.3;
+      opacity: .3;
       animation: ping 2s ease-out infinite;
     }
     @keyframes ping {
-      0%   { transform: scale(1); opacity: 0.3; }
-      100% { transform: scale(2.5); opacity: 0; }
+      0%   { transform: scale(1); opacity: .3; }
+      100% { transform: scale(2.8); opacity: 0; }
     }
 
-    /* Hero heading */
+    /* H1 */
     .hero h1 {
-      font-size: clamp(36px, 9.5vw, 56px);
+      font-size: clamp(38px, 10vw, 60px);
       font-weight: 900;
       letter-spacing: -2.5px;
       line-height: 1.06;
@@ -232,67 +292,43 @@
       position: relative;
       z-index: 1;
       margin-bottom: 18px;
-      animation: hero-h1-in 0.9s var(--ease-out) 0.1s both;
+      animation: fade-up .9s var(--ease) .1s both;
     }
-    @keyframes hero-h1-in {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Gold shimmer text */
-    .hero-gold-word {
-      background: linear-gradient(90deg, var(--gold) 0%, var(--gold2) 40%, var(--gold) 80%);
-      background-size: 200% auto;
+    .hero h1 .g {
+      background: linear-gradient(90deg, var(--gold), var(--gold-2) 50%, var(--gold));
+      background-size: 200%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      animation: text-shimmer 4s linear infinite 1s;
+      animation: shimmer 4s linear infinite 1.2s;
     }
-    @keyframes text-shimmer {
-      from { background-position: 200% center; }
-      to   { background-position: -200% center; }
+    @keyframes shimmer {
+      from { background-position: 200%; }
+      to   { background-position: -200%; }
     }
 
     .hero-sub {
       font-size: 16px;
-      color: var(--text-sec);
-      max-width: 380px;
+      color: var(--sec);
+      max-width: 370px;
       margin-bottom: 44px;
       line-height: 1.7;
-      position: relative;
-      z-index: 1;
-      animation: hero-h1-in 0.9s var(--ease-out) 0.2s both;
+      position: relative; z-index: 1;
+      animation: fade-up .9s var(--ease) .2s both;
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     .hero-actions {
+      position: relative; z-index: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
-      position: relative;
-      z-index: 1;
-      animation: hero-h1-in 0.9s var(--ease-out) 0.3s both;
-    }
-
-    /* Pulsing ring around main CTA */
-    .cta-wrap {
-      position: relative;
-    }
-    .cta-wrap::before {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, var(--gold), var(--gold2), var(--gold));
-      background-size: 200% 200%;
-      animation: border-rotate 3s linear infinite;
-      z-index: -1;
-      opacity: 0.6;
-    }
-    @keyframes border-rotate {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      gap: 14px;
+      animation: fade-up .9s var(--ease) .3s both;
     }
 
     .hero-meta {
@@ -300,51 +336,34 @@
       align-items: center;
       gap: 10px;
       font-size: 13px;
-      color: var(--text-muted);
+      color: var(--muted);
     }
-    .hero-meta .dot { width: 3px; height: 3px; background: var(--text-muted); border-radius: 50%; }
+    .hero-meta .sep { width: 3px; height: 3px; background: var(--muted); border-radius: 50%; }
 
-    /* ════ LIVE TICKER ════ */
-    .ticker-wrap {
-      position: relative;
-      z-index: 1;
-      height: 22px;
-      margin-bottom: 32px;
-      overflow: hidden;
-      animation: hero-h1-in 0.9s var(--ease-out) 0.25s both;
-    }
-
-    .ticker-item {
+    /* Scroll hint */
+    .scroll-hint {
       position: absolute;
-      inset: 0;
+      bottom: 32px; left: 50%;
+      transform: translateX(-50%);
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-size: 13px;
-      color: var(--text-muted);
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
-      white-space: nowrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      animation: fade-up .8s var(--ease) 1.4s both;
     }
-    .ticker-item.active {
-      opacity: 1;
-      transform: translateY(0);
+    .scroll-line {
+      width: 1px; height: 36px;
+      background: linear-gradient(to bottom, var(--gold-brd), transparent);
+      animation: scroll-blink 2s ease-in-out infinite;
     }
-    .ticker-item.leaving {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-    .ticker-name   { color: var(--text-sec); font-weight: 600; }
-    .ticker-amount { color: var(--gold); font-weight: 700; }
-    .ticker-live   { display: inline-flex; align-items: center; gap: 5px; }
-    .ticker-live::before {
-      content: '';
-      width: 5px; height: 5px;
-      background: var(--green);
-      border-radius: 50%;
-      flex-shrink: 0;
+    @keyframes scroll-blink {
+      0%, 100% { opacity: .5; transform: scaleY(1); }
+      50%       { opacity: 1;  transform: scaleY(.7); }
     }
 
     /* ════════════════════ STATS ════════════════════ */
@@ -355,284 +374,188 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .stat {
-      padding: 28px 12px;
-      text-align: center;
-      position: relative;
-    }
+    .stat { padding: 26px 12px; text-align: center; position: relative; }
     .stat + .stat::before {
       content: '';
       position: absolute;
-      left: 0; top: 25%; bottom: 25%;
-      width: 1px;
-      background: var(--border);
+      left: 0; top: 24%; bottom: 24%;
+      width: 1px; background: var(--border);
     }
+
     .stat-v {
       display: block;
-      font-size: 28px;
-      font-weight: 900;
+      font-size: 28px; font-weight: 900;
       color: var(--gold);
       letter-spacing: -1px;
-      line-height: 1;
-      margin-bottom: 6px;
+      line-height: 1; margin-bottom: 6px;
       font-variant-numeric: tabular-nums;
     }
-    .stat-l { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+    .stat-l { font-size: 11px; color: var(--muted); font-weight: 500; }
 
     /* ════════════════════ SECTION ════════════════════ */
     .section {
       max-width: var(--max);
       margin: 0 auto;
-      padding: 72px 24px;
+      padding: 80px 24px;
     }
 
     .s-tag {
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 11px; font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
+      letter-spacing: .14em;
       color: var(--gold);
       margin-bottom: 10px;
     }
 
     .section h2 {
-      font-size: clamp(26px, 6vw, 38px);
-      font-weight: 800;
-      letter-spacing: -1px;
-      line-height: 1.15;
-      margin-bottom: 36px;
+      font-size: clamp(28px, 6.5vw, 42px);
+      font-weight: 900;
+      letter-spacing: -1.2px;
+      line-height: 1.12;
+      margin-bottom: 40px;
     }
 
-    .sep { border: none; border-top: 1px solid var(--border); }
+    hr.sep { border: none; border-top: 1px solid var(--border); }
 
-    /* ════════════════════ CALC ════════════════════ */
-    .calc-box {
+    /* ════════════════════ CALCULATOR ════════════════════ */
+    .calc-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .calc-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .calc-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 26px;
-      transition: border-color 0.3s;
+      border-radius: 20px;
+      padding: 28px;
+      transition: border-color .3s;
     }
-    .calc-box:focus-within { border-color: var(--gold-brd); }
+    .calc-card:focus-within { border-color: var(--gold-brd); }
 
     .presets {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
-    .p-btn {
+    .pb {
       background: var(--surface);
       border: 1px solid var(--border);
-      color: var(--text-sec);
+      color: var(--sec);
       font-family: inherit;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 13px; font-weight: 600;
       padding: 7px 14px;
-      border-radius: var(--r-xs);
+      border-radius: 8px;
       cursor: pointer;
-      transition: all 0.15s var(--ease-out);
+      transition: all .13s;
     }
-    .p-btn:hover { border-color: var(--gold-brd); color: var(--text); }
-    .p-btn.on    { background: var(--gold-dim); border-color: var(--gold-brd); color: var(--gold); }
+    .pb:hover { border-color: var(--gold-brd); color: var(--text); }
+    .pb.on    { background: var(--gold-dim); border-color: var(--gold-brd); color: var(--gold); }
 
-    .calc-row {
+    .calc-body {
       display: grid;
-      grid-template-columns: 1fr 28px 1fr;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
+      gap: 14px;
+      margin-bottom: 20px;
     }
 
     .calc-f {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--r-sm);
-      padding: 13px 15px;
-      transition: border-color 0.2s;
+      border-radius: 14px;
+      padding: 16px 18px;
     }
-    .calc-f:focus-within { border-color: rgba(255,255,255,0.15); }
-    .calc-f.g { border-color: rgba(232,162,0,0.18); background: rgba(232,162,0,0.04); }
+    .calc-f.g-side { border-color: rgba(240,168,0,0.18); background: rgba(240,168,0,0.04); }
 
     .calc-f label {
       display: block;
-      font-size: 10px;
-      font-weight: 700;
+      font-size: 10px; font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-      margin-bottom: 5px;
+      letter-spacing: .1em;
+      color: var(--muted);
+      margin-bottom: 6px;
     }
 
     .calc-f input {
       font-family: inherit;
-      font-size: 22px;
-      font-weight: 800;
+      font-size: 36px; font-weight: 900;
       color: var(--text);
       background: none;
-      border: none;
-      outline: none;
+      border: none; outline: none;
       width: 100%;
-      letter-spacing: -0.5px;
+      letter-spacing: -1.5px;
       -moz-appearance: textfield;
     }
     .calc-f input::-webkit-outer-spin-button,
     .calc-f input::-webkit-inner-spin-button { -webkit-appearance: none; }
 
     .calc-out {
-      font-size: 22px;
-      font-weight: 800;
+      font-size: 36px; font-weight: 900;
       color: var(--gold);
-      letter-spacing: -0.5px;
-      transition: color 0.15s;
+      letter-spacing: -1.5px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
     }
-    .calc-out.flash {
-      animation: num-flash 0.35s var(--ease-out);
-    }
+    .calc-out.flash { animation: num-flash .3s var(--ease); }
     @keyframes num-flash {
-      0%   { color: var(--gold2); transform: scale(1.06); }
-      100% { color: var(--gold);  transform: scale(1); }
+      0%   { color: var(--gold-2); }
+      100% { color: var(--gold); }
     }
 
-    .calc-arrow { color: var(--text-muted); font-size: 20px; text-align: center; }
+    .calc-arr { color: var(--muted); font-size: 22px; text-align: center; }
 
-    .calc-note {
-      font-size: 12px;
-      color: var(--text-muted);
+    .calc-rate {
+      font-size: 12px; color: var(--muted);
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 6px;
     }
-    .calc-note b { color: var(--text-sec); font-weight: 600; }
+    .calc-rate b { color: var(--sec); font-weight: 600; }
 
-    /* Savings badge */
     .calc-save {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
       font-size: 12px;
       color: var(--green);
       font-weight: 600;
-      margin-bottom: 18px;
+      text-align: center;
+      margin-bottom: 20px;
       opacity: 0;
       transform: translateY(4px);
-      transition: opacity 0.3s, transform 0.3s;
+      transition: opacity .3s, transform .3s;
     }
-    .calc-save.show { opacity: 1; transform: translateY(0); }
-    .calc-save::before {
-      content: '✓';
-      width: 16px;
-      height: 16px;
-      background: rgba(34,197,94,0.12);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-    }
+    .calc-save.on { opacity: 1; transform: translateY(0); }
 
-    /* ════════════════════ FEATURES ════════════════════ */
-    .feats { display: flex; flex-direction: column; gap: 10px; }
+    /* ════════════════════ FEATURES (editorial) ════════════════════ */
+    .feat-list { display: flex; flex-direction: column; }
 
-    .feat {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 22px;
+    .feat-item {
       display: flex;
-      gap: 16px;
       align-items: flex-start;
-      transition: border-color 0.25s, transform 0.25s var(--ease-out), box-shadow 0.25s;
-      cursor: default;
+      gap: 24px;
+      padding: 26px 0;
+      border-bottom: 1px solid var(--border);
+      transition: background .2s;
     }
-    .feat:hover {
-      border-color: rgba(232,162,0,0.22);
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-    }
+    .feat-item:first-child { border-top: 1px solid var(--border); }
 
-    .feat-icon {
-      width: 42px;
-      height: 42px;
-      background: var(--gold-dim);
-      border-radius: 11px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .feat-n {
+      font-size: 11px; font-weight: 700;
       color: var(--gold);
+      letter-spacing: .1em;
+      padding-top: 4px;
       flex-shrink: 0;
-      transition: background 0.25s, transform 0.25s var(--ease-out);
-    }
-    .feat:hover .feat-icon { background: var(--gold-glow); transform: scale(1.05); }
-
-    .feat-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-    .feat-desc  { font-size: 14px; color: var(--text-sec); line-height: 1.55; }
-
-    /* ════════════════════ STEPS ════════════════════ */
-    .steps { display: flex; flex-direction: column; }
-
-    .step { display: flex; gap: 18px; position: relative; }
-
-    .step:not(:last-child)::before {
-      content: '';
-      position: absolute;
-      left: 19px; top: 42px; bottom: -4px;
-      width: 2px;
-      background: linear-gradient(to bottom, var(--gold-brd), transparent);
+      width: 24px;
     }
 
-    .step-n {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--gold-dim);
-      border: 1.5px solid var(--gold-brd);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--gold);
-      flex-shrink: 0;
-      position: relative;
-      z-index: 1;
-    }
-
-    .step-body  { padding: 8px 0 40px; }
-    .step:last-child .step-body { padding-bottom: 0; }
-    .step-title { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
-    .step-desc  { font-size: 14px; color: var(--text-sec); }
-
-    /* ════════════════════ PAYMENTS ════════════════════ */
-    .pay-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .pay-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 26px 18px;
-      text-align: center;
-      transition: border-color 0.25s, transform 0.25s var(--ease-out);
-    }
-    .pay-card:hover { border-color: var(--gold-brd); transform: translateY(-2px); }
-
-    .pay-ico {
-      width: 52px; height: 52px;
-      background: var(--gold-dim);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 14px;
-      color: var(--gold);
-    }
-    .pay-title { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
-    .pay-sub   { font-size: 12px; color: var(--text-muted); }
+    .feat-title { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
+    .feat-desc  { font-size: 14px; color: var(--sec); line-height: 1.55; }
 
     /* ════════════════════ REVIEWS ════════════════════ */
     .reviews { display: flex; flex-direction: column; gap: 10px; }
@@ -642,7 +565,7 @@
       border: 1px solid var(--border);
       border-radius: var(--r);
       padding: 20px 22px;
-      transition: border-color 0.25s, transform 0.25s var(--ease-out);
+      transition: border-color .2s, transform .2s var(--ease);
     }
     .review:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-1px); }
 
@@ -656,18 +579,17 @@
     .ava {
       width: 38px; height: 38px;
       border-radius: 50%;
-      background: var(--card2);
-      border: 1px solid var(--border);
+      background: var(--gold-dim);
+      border: 1px solid var(--gold-brd);
       display: flex; align-items: center; justify-content: center;
       font-size: 14px; font-weight: 800;
-      color: var(--gold);
-      flex-shrink: 0;
+      color: var(--gold); flex-shrink: 0;
     }
 
     .rname  { font-size: 14px; font-weight: 700; }
-    .rdate  { font-size: 12px; color: var(--text-muted); }
+    .rdate  { font-size: 12px; color: var(--muted); }
     .rstars { margin-left: auto; color: var(--gold); font-size: 13px; letter-spacing: 1px; }
-    .rtext  { font-size: 14px; color: var(--text-sec); line-height: 1.6; }
+    .rtext  { font-size: 14px; color: var(--sec); line-height: 1.6; }
 
     /* ════════════════════ FAQ ════════════════════ */
     .faqs { display: flex; flex-direction: column; gap: 2px; }
@@ -675,11 +597,11 @@
     .faq-item {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: var(--r-sm);
+      border-radius: 12px;
       overflow: hidden;
-      transition: border-color 0.2s;
+      transition: border-color .2s;
     }
-    .faq-item.open { border-color: rgba(232,162,0,0.16); }
+    .faq-item.open { border-color: rgba(240,168,0,0.16); }
 
     .faq-q {
       width: 100%;
@@ -688,299 +610,272 @@
       justify-content: space-between;
       gap: 12px;
       padding: 18px 20px;
-      background: none;
-      border: none;
+      background: none; border: none;
       color: var(--text);
       font-family: inherit;
-      font-size: 15px;
-      font-weight: 600;
-      text-align: left;
-      cursor: pointer;
+      font-size: 15px; font-weight: 600;
+      text-align: left; cursor: pointer;
       line-height: 1.4;
     }
 
     .faq-ico {
       flex-shrink: 0;
-      color: var(--text-muted);
-      transition: transform 0.3s var(--ease-out), color 0.2s;
+      color: var(--muted);
+      transition: transform .3s var(--ease), color .2s;
     }
     .faq-item.open .faq-ico { transform: rotate(180deg); color: var(--gold); }
 
     .faq-a {
       display: grid;
       grid-template-rows: 0fr;
-      transition: grid-template-rows 0.35s var(--ease-out);
+      transition: grid-template-rows .35s var(--ease);
     }
     .faq-item.open .faq-a { grid-template-rows: 1fr; }
-    .faq-a-in {
+
+    .faq-in {
       overflow: hidden;
       padding: 0 20px;
-      font-size: 14px;
-      color: var(--text-sec);
+      font-size: 14px; color: var(--sec);
       line-height: 1.65;
-      transition: padding 0.35s var(--ease-out);
+      transition: padding .35s var(--ease);
     }
-    .faq-item.open .faq-a-in { padding: 0 20px 18px; }
+    .faq-item.open .faq-in { padding: 0 20px 18px; }
 
-    /* ════════════════════ CTA BLOCK ════════════════════ */
-    .cta-box {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 56px 28px;
-      text-align: center;
+    /* ════════════════════ FINAL CTA — GOLD ════════════════════ */
+    .cta-gold {
+      background: var(--gold);
       position: relative;
       overflow: hidden;
     }
 
-    .cta-glow {
-      position: absolute;
-      top: -80px; left: 50%;
-      transform: translateX(-50%);
-      width: 600px; height: 400px;
-      background: radial-gradient(ellipse, rgba(232,162,0,0.12) 0%, transparent 65%);
-      pointer-events: none;
-      animation: glow-breathe 5s ease-in-out infinite;
+    .cta-gold-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 88px 24px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
     }
 
-    .cta-box h2     { margin-bottom: 12px; position: relative; }
-    .cta-box p      { color: var(--text-sec); font-size: 15px; margin-bottom: 36px; position: relative; }
-    .cta-box .btn   { position: relative; }
+    /* subtle texture inside gold section */
+    .cta-gold::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 70% at 50% 100%, rgba(0,0,0,0.1), transparent);
+      pointer-events: none;
+    }
+
+    .cta-gold .s-tag { color: rgba(0,0,0,0.45); }
+
+    .cta-gold h2 {
+      font-size: clamp(30px, 7vw, 48px);
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      color: #000;
+      margin-bottom: 12px;
+    }
+
+    .cta-gold p {
+      font-size: 16px;
+      color: rgba(0,0,0,0.6);
+      margin-bottom: 36px;
+      max-width: 340px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-dark {
+      background: #000;
+      color: var(--gold);
+      padding: 18px 44px;
+      font-size: 17px;
+      border-radius: 16px;
+    }
+    .btn-dark:hover {
+      opacity: .85;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.4);
+    }
 
     /* ════════════════════ FOOTER ════════════════════ */
     footer {
       border-top: 1px solid var(--border);
-      padding: 30px 24px;
+      padding: 28px 24px;
       text-align: center;
       font-size: 13px;
-      color: var(--text-muted);
+      color: var(--muted);
       line-height: 1.9;
     }
-    footer a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
-    footer a:hover { color: var(--text-sec); }
+    footer a { color: var(--muted); text-decoration: none; transition: color .2s; }
+    footer a:hover { color: var(--sec); }
 
     /* ════════════════════ STICKY CTA ════════════════════ */
-    .sticky-cta {
+    .sticky {
       display: none;
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      padding: 10px 16px 22px;
+      padding: 10px 16px 20px;
       background: linear-gradient(to top, var(--bg) 55%, transparent);
-      z-index: 100;
+      z-index: 200;
       pointer-events: none;
       transform: translateY(100%);
-      transition: transform 0.4s var(--ease-out);
+      transition: transform .4s var(--ease);
     }
-    .sticky-cta.shown { transform: translateY(0); }
-    .sticky-cta .btn  { pointer-events: all; }
+    .sticky.on { transform: translateY(0); }
+    .sticky .btn { pointer-events: all; box-shadow: 0 8px 28px rgba(240,168,0,0.22); }
 
-    @media (max-width: 600px) {
-      .sticky-cta { display: block; }
-    }
+    @media (max-width: 600px) { .sticky { display: block; } }
 
-    /* ════════════════════ SCROLLBAR ════════════════════ */
-    ::-webkit-scrollbar { width: 6px; }
+    /* ════════ SCROLLBAR ════════ */
+    ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.14); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); border-radius: 3px; }
   </style>
 </head>
 <body>
 
+<!-- Custom cursor -->
+<div id="cur"></div>
+<div id="cur-t"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="toast-ava" id="t-ava"></div>
+  <div>
+    <div class="toast-name" id="t-name"></div>
+    <div class="toast-sub"  id="t-sub"></div>
+  </div>
+</div>
+
 <!-- NAV -->
-<nav class="nav">
-  <a href="/" class="logo">T<span>Gold</span></a>
-  <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-sm">Купить голду</a>
+<nav class="nav" id="nav">
+  <a href="/" class="logo">T<em>Gold</em></a>
+  <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-sm">Купить голду</a>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
   <div class="hero-glow"></div>
+  <div class="hero-bg-word" aria-hidden="true">GOLD</div>
 
   <div class="badge">
     <span class="badge-dot"></span>
     Бот онлайн · 10 000+ покупателей
   </div>
 
-  <!-- Live ticker -->
-  <div class="ticker-wrap" id="ticker"></div>
-
-  <h1>Голда для&nbsp;<span class="hero-gold-word">Standoff&nbsp;2</span><br>без переплат</h1>
+  <h1 id="h1" data-text="Голда для Standoff 2 без переплат">
+    Голда для <span class="g">Standoff&nbsp;2</span><br>без переплат
+  </h1>
 
   <p class="hero-sub">
-    Зачисление за 2 минуты. Курс 0.67₽&nbsp;за&nbsp;1G —
-    берём комиссию маркета на&nbsp;себя.
+    Зачисление за 2 минуты. Курс 0.67₽ за 1G —<br>
+    берём комиссию маркета на себя.
   </p>
 
   <div class="hero-actions">
-    <div class="cta-wrap">
-      <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-lg">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-        Открыть бота
-      </a>
-    </div>
+    <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-lg">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      Открыть бота
+    </a>
     <div class="hero-meta">
-      <span>СБП · Карта РФ</span><span class="dot"></span>
-      <span>USDT</span><span class="dot"></span>
+      <span>СБП · Карта РФ</span><span class="sep"></span>
+      <span>USDT</span><span class="sep"></span>
       <span>Без комиссии</span>
     </div>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <div class="scroll-line"></div>
+    скролл
   </div>
 </div>
 
 <!-- STATS -->
 <div class="stats">
-  <div class="stat r">
-    <span class="stat-v" data-count="10000" data-suffix="K+">0</span>
+  <div class="stat rv">
+    <span class="stat-v" data-to="10" data-suf="K+">—</span>
     <span class="stat-l">покупателей</span>
   </div>
-  <div class="stat r d1">
-    <span class="stat-v" data-count="5" data-suffix="M+">0</span>
+  <div class="stat rv d1">
+    <span class="stat-v" data-to="5" data-suf="M+">—</span>
     <span class="stat-l">голды продано</span>
   </div>
-  <div class="stat r d2">
-    <span class="stat-v" data-count="2" data-suffix=" мин">0</span>
+  <div class="stat rv d2">
+    <span class="stat-v" data-to="2" data-suf=" мин">—</span>
     <span class="stat-l">зачисление</span>
   </div>
 </div>
 
 <!-- CALCULATOR -->
-<section class="section">
-  <div class="s-tag r">Калькулятор</div>
-  <h2 class="r d1">Сколько голды ты получишь?</h2>
+<div class="calc-section">
+  <div class="calc-inner">
+    <div class="s-tag rv">Калькулятор</div>
+    <h2 class="rv d1">Сколько голды<br>ты получишь?</h2>
 
-  <div class="calc-box r d2">
-    <div class="presets">
-      <button class="p-btn" data-v="200">200₽</button>
-      <button class="p-btn" data-v="500">500₽</button>
-      <button class="p-btn on" data-v="1000">1 000₽</button>
-      <button class="p-btn" data-v="2000">2 000₽</button>
-      <button class="p-btn" data-v="5000">5 000₽</button>
-    </div>
-
-    <div class="calc-row">
-      <div class="calc-f">
-        <label>Сумма (₽)</label>
-        <input id="rub" type="number" value="1000" min="1" placeholder="1000">
+    <div class="calc-card rv d2">
+      <div class="presets">
+        <button class="pb"    data-v="200">200₽</button>
+        <button class="pb"    data-v="500">500₽</button>
+        <button class="pb on" data-v="1000">1 000₽</button>
+        <button class="pb"    data-v="2000">2 000₽</button>
+        <button class="pb"    data-v="5000">5 000₽</button>
       </div>
-      <div class="calc-arrow">→</div>
-      <div class="calc-f g">
-        <label>Голда (G)</label>
-        <div class="calc-out" id="gold-out">1 492</div>
+
+      <div class="calc-body">
+        <div class="calc-f">
+          <label>Рубли</label>
+          <input id="rub" type="number" value="1000" min="1">
+        </div>
+        <div class="calc-arr">→</div>
+        <div class="calc-f g-side">
+          <label>Голда</label>
+          <div class="calc-out" id="gold-out">1 492</div>
+        </div>
       </div>
+
+      <p class="calc-rate">Курс <b>0.67₽ за 1G</b> · комиссия маркета — за наш счёт</p>
+      <div class="calc-save" id="calc-save">✓ Комиссия маркета покрыта — платишь ниже рыночной цены</div>
+
+      <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-full" style="margin-top:4px">
+        Купить голду в Telegram →
+      </a>
     </div>
-
-    <p class="calc-note">Курс <b>0.67₽ за 1G</b> · комиссия маркета уже учтена — платишь только за голду</p>
-    <div class="calc-save" id="calc-save">Комиссия маркета покрыта — платишь меньше рыночной цены</div>
-
-    <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-full">
-      Купить в Telegram →
-    </a>
   </div>
-</section>
+</div>
 
-<hr class="sep">
-
-<!-- WHY -->
+<!-- FEATURES (editorial) -->
 <section class="section">
-  <div class="s-tag r">Преимущества</div>
-  <h2 class="r d1">Почему выбирают TGold</h2>
+  <div class="s-tag rv">Почему TGold</div>
+  <h2 class="rv d1">Быстро. Дёшево.<br>Без рисков.</h2>
 
-  <div class="feats">
-    <div class="feat r d1">
-      <div class="feat-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      </div>
+  <div class="feat-list">
+    <div class="feat-item rv d1">
+      <span class="feat-n">01</span>
       <div>
         <div class="feat-title">Зачисление за 2 минуты</div>
-        <div class="feat-desc">Голда приходит на баланс в Standoff 2 автоматически сразу после оплаты. Без ожиданий и очередей.</div>
+        <div class="feat-desc">Голда приходит на баланс Standoff 2 автоматически сразу после оплаты. Без ожиданий и очередей.</div>
       </div>
     </div>
-
-    <div class="feat r d2">
-      <div class="feat-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-      </div>
+    <div class="feat-item rv d2">
+      <span class="feat-n">02</span>
       <div>
-        <div class="feat-title">Курс ниже, чем в магазине игры</div>
-        <div class="feat-desc">0.67₽ за 1G. Берём комиссию внутриигрового маркета на себя — ты платишь только за голду, без наценок.</div>
+        <div class="feat-title">Курс 0.67₽/G — ниже маркета</div>
+        <div class="feat-desc">Берём комиссию внутриигрового маркета на себя. Ты платишь только за голду — без скрытых наценок.</div>
       </div>
     </div>
-
-    <div class="feat r d3">
-      <div class="feat-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      </div>
+    <div class="feat-item rv d3">
+      <span class="feat-n">03</span>
       <div>
-        <div class="feat-title">Аккаунт в безопасности</div>
-        <div class="feat-desc">Передача только через официальный маркет Standoff 2. Нужен только никнейм — пароль не запрашиваем никогда.</div>
+        <div class="feat-title">Аккаунт в полной безопасности</div>
+        <div class="feat-desc">Передача через официальный маркет Standoff 2. Нам нужен только никнейм — пароль не запрашиваем.</div>
       </div>
     </div>
-
-    <div class="feat r d4">
-      <div class="feat-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      </div>
+    <div class="feat-item rv d4">
+      <span class="feat-n">04</span>
       <div>
         <div class="feat-title">Поддержка 24/7</div>
-        <div class="feat-desc">Отвечаем в Telegram в любое время. Если что-то пошло не так — разберёмся и исправим.</div>
+        <div class="feat-desc">Отвечаем в Telegram в любое время. Голда не пришла — вернём деньги или дошлём.</div>
       </div>
-    </div>
-  </div>
-</section>
-
-<hr class="sep">
-
-<!-- HOW IT WORKS -->
-<section class="section">
-  <div class="s-tag r">Инструкция</div>
-  <h2 class="r d1">Три шага — и голда у тебя</h2>
-
-  <div class="steps">
-    <div class="step r d1">
-      <div class="step-n">1</div>
-      <div class="step-body">
-        <div class="step-title">Открой бота в Telegram</div>
-        <div class="step-desc">Нажми «Открыть бота» — никакой регистрации, просто Telegram.</div>
-      </div>
-    </div>
-    <div class="step r d2">
-      <div class="step-n">2</div>
-      <div class="step-body">
-        <div class="step-title">Выбери количество и оплати</div>
-        <div class="step-desc">Укажи никнейм в игре, выбери сумму и оплати через СБП, карту или USDT.</div>
-      </div>
-    </div>
-    <div class="step r d3">
-      <div class="step-n">3</div>
-      <div class="step-body">
-        <div class="step-title">Получи голду в игре</div>
-        <div class="step-desc">Зачисление через официальный маркет. Среднее время — 2 минуты.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr class="sep">
-
-<!-- PAYMENTS -->
-<section class="section">
-  <div class="s-tag r">Оплата</div>
-  <h2 class="r d1">Удобные способы</h2>
-
-  <div class="pay-grid">
-    <div class="pay-card r d1">
-      <div class="pay-ico">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-      </div>
-      <div class="pay-title">СБП · Карта РФ</div>
-      <div class="pay-sub">Любой банк · мгновенно</div>
-    </div>
-    <div class="pay-card r d2">
-      <div class="pay-ico">
-        <svg width="26" height="26" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0zm0 5.333c5.891 0 10.667 4.776 10.667 10.667S21.891 26.667 16 26.667 5.333 21.891 5.333 16 10.109 5.333 16 5.333zm0 2.667c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zm1.333 2.667v1.472c1.48.32 2.667 1.4 2.667 2.861 0 .736-.298 1.4-.8 1.888-.502.489-1.224.8-2.067.88v2.347h-1.333v-2.347c-1.8-.16-3.067-1.36-3.067-2.88h1.334c0 .8.667 1.467 1.733 1.467.533 0 .96-.16 1.227-.4.267-.24.4-.533.4-.88 0-.347-.133-.613-.4-.853-.267-.24-.694-.4-1.227-.4-1.24 0-2.4-.88-2.4-2.133 0-1.12.907-2.027 2.133-2.267V10.667h1.8z"/></svg>
-      </div>
-      <div class="pay-title">USDT</div>
-      <div class="pay-sub">TRC-20 / ERC-20</div>
     </div>
   </div>
 </section>
@@ -989,11 +884,11 @@
 
 <!-- REVIEWS -->
 <section class="section">
-  <div class="s-tag r">Отзывы</div>
-  <h2 class="r d1">Говорят покупатели</h2>
+  <div class="s-tag rv">Отзывы</div>
+  <h2 class="rv d1">Что говорят<br>покупатели</h2>
 
   <div class="reviews">
-    <div class="review r d1">
+    <div class="review rv d1">
       <div class="rev-top">
         <div class="ava">К</div>
         <div><div class="rname">Кирилл</div><div class="rdate">3 дня назад</div></div>
@@ -1001,8 +896,7 @@
       </div>
       <div class="rtext">Брал 3000G — пришло буквально за минуту. Уже третий раз покупаю, всё чётко и без вопросов</div>
     </div>
-
-    <div class="review r d2">
+    <div class="review rv d2">
       <div class="rev-top">
         <div class="ava">Д</div>
         <div><div class="rname">Даниил</div><div class="rdate">неделю назад</div></div>
@@ -1010,8 +904,7 @@
       </div>
       <div class="rtext">Боялся что кинут — не кинули. Заплатил через СБП, голда пришла быстро. Цена реально ниже чем везде</div>
     </div>
-
-    <div class="review r d3">
+    <div class="review rv d3">
       <div class="rev-top">
         <div class="ava">А</div>
         <div><div class="rname">Артём</div><div class="rdate">2 недели назад</div></div>
@@ -1026,249 +919,272 @@
 
 <!-- FAQ -->
 <section class="section">
-  <div class="s-tag r">FAQ</div>
-  <h2 class="r d1">Частые вопросы</h2>
+  <div class="s-tag rv">FAQ</div>
+  <h2 class="rv d1">Вопросы</h2>
 
   <div class="faqs">
-    <div class="faq-item open r d1">
+    <div class="faq-item open rv d1">
       <button class="faq-q" aria-expanded="true">
         Как происходит передача голды?
         <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="faq-a"><div class="faq-a-in">Через официальный внутриигровой маркет Standoff 2. Ты выставляешь предмет на продажу, мы покупаем — голда зачисляется автоматически. Никакого доступа к аккаунту нам не нужно.</div></div>
+      <div class="faq-a"><div class="faq-in">Через официальный внутриигровой маркет Standoff 2. Ты выставляешь предмет на продажу, мы покупаем — голда зачисляется автоматически. Доступ к аккаунту нам не нужен.</div></div>
     </div>
-
-    <div class="faq-item r d2">
+    <div class="faq-item rv d2">
       <button class="faq-q" aria-expanded="false">
         Безопасно ли это для аккаунта?
         <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="faq-a"><div class="faq-a-in">Да, полностью. Мы используем стандартный маркет игры — это обычная торговля между игроками. Нам нужен только твой никнейм. Пароль и данные аккаунта не нужны никогда.</div></div>
+      <div class="faq-a"><div class="faq-in">Да, полностью. Мы используем стандартный маркет игры — это обычная торговля между игроками. Нам нужен только твой никнейм. Пароль не запрашиваем никогда.</div></div>
     </div>
-
-    <div class="faq-item r d3">
-      <button class="faq-q" aria-expanded="false">
-        Как долго ждать зачисление?
-        <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="faq-a"><div class="faq-a-in">В среднем 2–5 минут. Иногда быстрее. В редких случаях до 10 минут при загрузке серверов игры.</div></div>
-    </div>
-
-    <div class="faq-item r d4">
+    <div class="faq-item rv d3">
       <button class="faq-q" aria-expanded="false">
         Почему цена ниже, чем в самой игре?
         <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="faq-a"><div class="faq-a-in">Официальный магазин игры берёт комиссию маркета с покупателя. Мы берём её на себя — поэтому ты получаешь больше голды за те же деньги.</div></div>
+      <div class="faq-a"><div class="faq-in">Официальный магазин Standoff 2 берёт комиссию маркета с покупателя. Мы берём её на себя — поэтому ты получаешь больше голды за те же деньги.</div></div>
     </div>
-
-    <div class="faq-item r d5">
+    <div class="faq-item rv d4">
       <button class="faq-q" aria-expanded="false">
         Что если голда не пришла?
         <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="faq-a"><div class="faq-a-in">Напиши в поддержку бота — разберёмся за несколько минут и либо дошлём голду, либо вернём деньги.</div></div>
+      <div class="faq-a"><div class="faq-in">Напиши в поддержку бота — разберёмся и либо дошлём голду, либо вернём деньги. Работаем 24/7.</div></div>
     </div>
   </div>
 </section>
 
-<!-- FINAL CTA -->
-<section class="section r" style="padding-bottom: 100px;">
-  <div class="cta-box">
-    <div class="cta-glow"></div>
-    <div class="s-tag" style="position:relative">Готов?</div>
-    <h2>Начни прямо сейчас</h2>
-    <p>Открой бота в Telegram и получи голду за 2 минуты</p>
-    <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-lg">
+<!-- FINAL CTA — GOLD BACKGROUND -->
+<div class="cta-gold rv">
+  <div class="cta-gold-inner">
+    <div class="s-tag">Начни прямо сейчас</div>
+    <h2>Голда за 2 минуты</h2>
+    <p>Открой бота в Telegram — никакой регистрации, просто нажми кнопку</p>
+    <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-dark">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
       Купить голду в Telegram
     </a>
   </div>
-</section>
+</div>
 
 <!-- FOOTER -->
 <footer>
-  <div style="margin-bottom:8px">
-    <a href="https://t.me/TGoldRobot?start=yads">Поддержка в Telegram</a>
-  </div>
-  TGold не является официальным продуктом Standoff 2 / AQUAPARK ENTERTAINMENT
+  <a href="https://t.me/TGoldRobot?start=yads">Поддержка в Telegram</a><br>
+  TGold — не является официальным продуктом Standoff 2 / AQUAPARK ENTERTAINMENT
 </footer>
 
 <!-- STICKY CTA (mobile) -->
-<div class="sticky-cta" id="sticky">
-  <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-full btn-lg">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+<div class="sticky" id="sticky">
+  <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-full btn-lg">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.277-.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
     Купить голду →
   </a>
 </div>
 
 <script>
-  /* ── LIVE TICKER ── */
-  const ORDERS = [
-    { name: 'Артём',   gold: '2 000G' },
-    { name: 'Дмитрий', gold: '5 000G' },
-    { name: 'Никита',  gold: '1 500G' },
-    { name: 'Иван',    gold: '3 000G' },
-    { name: 'Данил',   gold: '750G'   },
-    { name: 'Макс',    gold: '10 000G'},
-    { name: 'Серёга',  gold: '2 500G' },
-    { name: 'Кирилл',  gold: '4 000G' },
-  ];
-  const TIMES = ['только что', '1 мин назад', '2 мин назад', '3 мин назад', '5 мин назад'];
-
-  const ticker = document.getElementById('ticker');
-  let tickerIdx = 0;
-  let currentEl = null;
-
-  function buildTickerItem(o, t) {
-    const el = document.createElement('div');
-    el.className = 'ticker-item';
-    el.innerHTML = `<span class="ticker-live"></span><span class="ticker-name">${o.name}</span>&nbsp;купил&nbsp;<span class="ticker-amount">${o.gold}</span>&nbsp;·&nbsp;${t}`;
-    return el;
+/* ── GRAIN TEXTURE ── */
+(function() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 180;
+  const ctx = c.getContext('2d');
+  const img = ctx.createImageData(180, 180);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = Math.random() * 255 | 0;
+    img.data[i] = img.data[i+1] = img.data[i+2] = v;
+    img.data[i+3] = Math.random() * 14 | 0;
   }
+  ctx.putImageData(img, 0, 0);
+  const d = document.createElement('div');
+  d.style.cssText = 'position:fixed;inset:0;z-index:998;pointer-events:none;opacity:.55;background:url(' + c.toDataURL() + ') repeat;background-size:180px';
+  document.body.appendChild(d);
+})();
 
-  function nextTick() {
-    const o = ORDERS[tickerIdx % ORDERS.length];
-    const t = TIMES[tickerIdx % TIMES.length];
-    tickerIdx++;
-
-    const next = buildTickerItem(o, t);
-    ticker.appendChild(next);
-
-    requestAnimationFrame(() => {
-      if (currentEl) currentEl.classList.add('leaving');
-      setTimeout(() => {
-        if (currentEl) currentEl.remove();
-        currentEl = next;
-        next.classList.add('active');
-      }, 500);
+/* ── CUSTOM CURSOR ── */
+(function() {
+  const cur = document.getElementById('cur');
+  const trail = document.getElementById('cur-t');
+  if (window.matchMedia('(pointer:fine)').matches) {
+    let mx = 0, my = 0, tx = 0, ty = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cur.style.left = mx + 'px';
+      cur.style.top  = my + 'px';
+    }, { passive: true });
+    (function loop() {
+      tx += (mx - tx) * 0.1;
+      ty += (my - ty) * 0.1;
+      trail.style.left = tx + 'px';
+      trail.style.top  = ty + 'px';
+      requestAnimationFrame(loop);
+    })();
+    document.querySelectorAll('a, button, .pb').forEach(el => {
+      el.addEventListener('mouseenter', () => { cur.classList.add('big'); trail.classList.add('big'); });
+      el.addEventListener('mouseleave', () => { cur.classList.remove('big'); trail.classList.remove('big'); });
     });
   }
+})();
 
-  nextTick();
-  setInterval(nextTick, 3500);
+/* ── SCROLL REVEAL ── */
+const ro = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add('on'); ro.unobserve(e.target); }
+}), { threshold: 0.07, rootMargin: '0px 0px -36px 0px' });
+document.querySelectorAll('.rv').forEach(el => ro.observe(el));
 
-  /* ── SCROLL REVEAL ── */
-  const revealObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); revealObs.unobserve(e.target); } });
-  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+/* ── STATS COUNTER ── */
+function countUp(el) {
+  const to  = +el.dataset.to;
+  const suf = el.dataset.suf || '';
+  const dur = 1300;
+  const s   = performance.now();
+  (function f(now) {
+    const p = Math.min((now - s) / dur, 1);
+    const v = Math.floor((1 - Math.pow(1-p,3)) * to);
+    el.textContent = (p < 1 ? v : to) + suf;
+    if (p < 1) requestAnimationFrame(f);
+  })(s);
+}
+const so = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { countUp(e.target.querySelector('.stat-v')); so.unobserve(e.target); }
+}), { threshold: 0.4 });
+document.querySelectorAll('.stat').forEach(el => so.observe(el));
 
-  document.querySelectorAll('.r').forEach(el => revealObs.observe(el));
+/* ── SCRAMBLE HEADING ── */
+(function() {
+  const el = document.getElementById('h1');
+  const full = 'Голда для Standoff 2 без переплат';
+  const CHARS = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯ0123456789#@!';
+  const DUR = 1600;
+  let started = false;
 
-  /* ── STATS COUNTER ── */
-  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
-
-  function animateCount(el) {
-    const target = parseInt(el.dataset.count, 10);
-    const suffix = el.dataset.suffix || '';
-    const duration = 1400;
-    const start = performance.now();
-
-    const fmt = (n) => {
-      if (target >= 1000) return Math.floor(n / 1000) + (n >= target ? suffix : 'K+');
-      return Math.floor(n) + (n >= target ? suffix : '');
-    };
-
-    const tick = (now) => {
-      const t = Math.min((now - start) / duration, 1);
-      const val = easeOutCubic(t) * target;
-      el.textContent = t < 1 ? fmt(val) : (target >= 1000 ? (target/1000) : target) + suffix;
-      if (t < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
+  function run(now, start) {
+    const p = Math.min((now - start) / DUR, 1);
+    const rev = Math.floor(p * full.length);
+    // rebuild inner HTML keeping the <span class="g"> wrapper for "Standoff 2"
+    const plain = full.split('').map((ch, i) => {
+      if (ch === ' ') return ' ';
+      if (i < rev)   return ch;
+      return CHARS[Math.random() * CHARS.length | 0];
+    }).join('');
+    // re-apply the gold span for "Standoff 2" (chars 10-19)
+    const before  = plain.slice(0, 10);
+    const middle  = plain.slice(10, 20);
+    const after   = plain.slice(20);
+    el.innerHTML  = before + '<span class="g">' + middle + '</span>' + after;
+    if (p < 1) requestAnimationFrame(t => run(t, start));
+    else el.innerHTML = 'Голда для <span class="g">Standoff&nbsp;2</span><br>без переплат';
   }
 
-  const statObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const v = e.target.querySelector('.stat-v');
-        if (v) animateCount(v);
-        statObs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.3 });
+  // Fire after page load + small delay
+  setTimeout(() => {
+    requestAnimationFrame(t => run(t, t));
+  }, 400);
+})();
 
-  document.querySelectorAll('.stat').forEach(el => statObs.observe(el));
+/* ── CALCULATOR ── */
+const rubEl  = document.getElementById('rub');
+const outEl  = document.getElementById('gold-out');
+const saveEl = document.getElementById('calc-save');
+const RATE   = 0.67;
+let flashT;
 
-  /* ── CALCULATOR ── */
-  const rubIn   = document.getElementById('rub');
-  const goldEl  = document.getElementById('gold-out');
-  const saveEl  = document.getElementById('calc-save');
-  const RATE    = 0.67;
-  let flashTimer;
-
-  function calc(animate = true) {
-    const v = parseFloat(rubIn.value) || 0;
-    const g = v > 0 ? Math.floor(v / RATE) : 0;
-
-    goldEl.textContent = g > 0 ? g.toLocaleString('ru-RU') : '—';
-
-    if (animate && v > 0) {
-      clearTimeout(flashTimer);
-      goldEl.classList.remove('flash');
-      flashTimer = setTimeout(() => goldEl.classList.add('flash'), 10);
-      goldEl.addEventListener('animationend', () => goldEl.classList.remove('flash'), { once: true });
-    }
-
-    saveEl.classList.toggle('show', v > 0);
+function calc(anim) {
+  const v = parseFloat(rubEl.value) || 0;
+  const g = v > 0 ? Math.floor(v / RATE) : 0;
+  outEl.textContent = g > 0 ? g.toLocaleString('ru-RU') : '—';
+  saveEl.classList.toggle('on', v > 0);
+  if (anim && v > 0) {
+    clearTimeout(flashT);
+    outEl.classList.remove('flash');
+    flashT = setTimeout(() => {
+      outEl.classList.add('flash');
+      outEl.addEventListener('animationend', () => outEl.classList.remove('flash'), { once: true });
+    }, 10);
   }
+}
 
-  rubIn.addEventListener('input', () => {
-    document.querySelectorAll('.p-btn').forEach(b => b.classList.remove('on'));
-    calc();
+rubEl.addEventListener('input', () => {
+  document.querySelectorAll('.pb').forEach(b => b.classList.remove('on'));
+  calc(true);
+});
+
+document.querySelectorAll('.pb').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.pb').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    rubEl.value = btn.dataset.v;
+    calc(true);
   });
+});
 
-  document.querySelectorAll('.p-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.p-btn').forEach(b => b.classList.remove('on'));
-      btn.classList.add('on');
-      rubIn.value = btn.dataset.v;
-      calc();
+calc(false);
+
+/* ── FAQ ── */
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.faq-item');
+    const open = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
     });
+    if (!open) { item.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
   });
+});
 
-  calc(false);
+/* ── NAV SCROLL ── */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
 
-  /* ── FAQ ── */
-  document.querySelectorAll('.faq-q').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const item   = btn.closest('.faq-item');
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item').forEach(i => {
-        i.classList.remove('open');
-        i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
-      });
-      if (!isOpen) { item.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
-    });
-  });
+/* ── STICKY CTA ── */
+const sticky = document.getElementById('sticky');
+const hero   = document.querySelector('.hero');
+const footer = document.querySelector('footer');
+let sOn = false;
 
-  /* ── STICKY CTA ── */
-  const sticky  = document.getElementById('sticky');
-  const footer  = document.querySelector('footer');
-  let stickyOn  = false;
+new IntersectionObserver(([e]) => {
+  if (!e.isIntersecting && !sOn) { sOn = true; sticky.classList.add('on'); }
+  else if (e.isIntersecting && sOn) { sOn = false; sticky.classList.remove('on'); }
+}).observe(hero);
 
-  const stickyShow = new IntersectionObserver(([e]) => {
-    const shouldShow = !e.isIntersecting;
-    if (shouldShow !== stickyOn) {
-      stickyOn = shouldShow;
-      sticky.classList.toggle('shown', stickyOn);
-    }
-  });
-  stickyShow.observe(document.querySelector('.hero'));
+new IntersectionObserver(([e]) => {
+  if (e.isIntersecting) sticky.classList.remove('on');
+  else if (sOn) sticky.classList.add('on');
+}).observe(footer);
 
-  const stickyHide = new IntersectionObserver(([e]) => {
-    if (e.isIntersecting) { sticky.classList.remove('shown'); stickyOn = false; }
-    else if (!sticky.classList.contains('shown')) { sticky.classList.add('shown'); stickyOn = true; }
-  });
-  stickyHide.observe(footer);
+/* ── TOAST NOTIFICATIONS ── */
+const TOASTS = [
+  { n: 'Никита А.',  g: '2 500G',  t: 'только что' },
+  { n: 'Дима К.',    g: '5 000G',  t: '1 мин назад' },
+  { n: 'Иван М.',    g: '1 000G',  t: '2 мин назад' },
+  { n: 'Серёга Л.',  g: '3 000G',  t: '4 мин назад' },
+  { n: 'Артём Ф.',   g: '750G',    t: '6 мин назад' },
+  { n: 'Макс Б.',    g: '10 000G', t: '8 мин назад' },
+  { n: 'Андрей П.',  g: '2 000G',  t: '10 мин назад'},
+];
 
-  /* ── NAV SCROLL STATE ── */
-  const nav = document.querySelector('.nav');
-  window.addEventListener('scroll', () => {
-    nav.style.background = window.scrollY > 40
-      ? 'rgba(7,8,13,0.95)'
-      : 'rgba(7,8,13,0.7)';
-  }, { passive: true });
+const tEl  = document.getElementById('toast');
+const tAva = document.getElementById('t-ava');
+const tNm  = document.getElementById('t-name');
+const tSub = document.getElementById('t-sub');
+let ti = 0;
+
+function showToast() {
+  const d = TOASTS[ti % TOASTS.length];
+  ti++;
+  tAva.textContent = d.n[0];
+  tNm.textContent  = d.n + ' получил ' + d.g;
+  tSub.textContent = d.t;
+  tEl.classList.add('on');
+  setTimeout(() => tEl.classList.remove('on'), 4000);
+}
+
+// First toast after 8s, then every 12–18s
+setTimeout(() => {
+  showToast();
+  setInterval(showToast, 14000 + Math.random() * 4000);
+}, 8000);
 </script>
 </body>
 </html>

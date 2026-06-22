@@ -4,963 +4,278 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TGold — Голда для Standoff 2</title>
-  <meta name="description" content="Купить голду Standoff 2 — 0.67₽/G, зачисление за 2 минуты. СБП, USDT.">
+  <meta name="description" content="Купить голду Standoff 2 — 0.67₽/G, зачисление 2 минуты, официальный метод. СБП, USDT.">
+  <meta property="og:title" content="TGold — Голда для Standoff 2">
+  <meta property="og:description" content="0.67₽/G · 2 минуты · без комиссии">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:        #060508;
-      --surface:   #0B0910;
-      --card:      #0F0D16;
-      --border:    rgba(255,255,255,0.07);
-      --gold:      #F0A800;
-      --gold-2:    #FFD166;
-      --gold-dim:  rgba(240,168,0,0.08);
-      --gold-brd:  rgba(240,168,0,0.2);
-      --text:      #EDEAF5;
-      --sec:       #76748E;
-      --muted:     #42405A;
-      --green:     #22C55E;
-      --r:         16px;
-      --max:       640px;
-      --ease:      cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    html { scroll-behavior: smooth; overflow-x: hidden; }
-
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
-
-    /* ── CURSOR (desktop only) ── */
-    @media (pointer: fine) {
-      * { cursor: none !important; }
-    }
-
-    #cur, #cur-t {
-      display: none;
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      will-change: left, top;
-    }
-
-    @media (pointer: fine) {
-      #cur {
-        display: block;
-        width: 8px; height: 8px;
-        background: var(--gold);
-        transition: width .15s, height .15s, opacity .15s;
-      }
-      #cur.big { width: 12px; height: 12px; }
-      #cur-t {
-        display: block;
-        width: 30px; height: 30px;
-        border: 1px solid rgba(240,168,0,0.35);
-        transition: width .2s, height .2s, border-color .2s;
-      }
-      #cur-t.big { width: 46px; height: 46px; border-color: rgba(240,168,0,0.55); }
-    }
-
-    /* ── TOAST ── */
-    .toast {
-      position: fixed;
-      bottom: 90px;
-      left: 20px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      z-index: 800;
-      max-width: 270px;
-      pointer-events: none;
-      transform: translateX(calc(-100% - 24px));
-      transition: transform 0.45s var(--ease);
-      backdrop-filter: blur(12px);
-    }
-    .toast.on { transform: translateX(0); }
-
-    .toast-ava {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      background: var(--gold-dim);
-      border: 1px solid var(--gold-brd);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 800;
-      color: var(--gold);
-      flex-shrink: 0;
-    }
-
-    .toast-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
-    .toast-sub  { font-size: 12px; color: var(--sec); }
-
-    /* ── NAV ── */
-    .nav {
-      position: fixed;
-      inset: 0 0 auto;
-      z-index: 300;
-      padding: 14px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: background 0.3s, border-color 0.3s;
-      border-bottom: 1px solid transparent;
-    }
-    .nav.scrolled {
-      background: rgba(6,5,8,0.88);
-      border-color: var(--border);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
-
-    .logo {
-      font-size: 20px; font-weight: 900;
-      letter-spacing: -0.6px;
-      color: var(--text);
-      text-decoration: none;
-    }
-    .logo em { color: var(--gold); font-style: normal; }
-
-    /* ── BUTTONS ── */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-family: inherit;
-      font-weight: 700;
-      font-size: 15px;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: opacity .13s, transform .13s, box-shadow .2s;
-      white-space: nowrap;
-      line-height: 1;
-    }
-
-    .btn-gold {
-      background: var(--gold);
-      color: #000;
-      padding: 13px 24px;
-      border-radius: 12px;
-    }
-    .btn-gold:hover {
-      opacity: .88;
-      transform: translateY(-1px);
-      box-shadow: 0 10px 32px rgba(240,168,0,0.28);
-    }
-    .btn-gold:active { transform: translateY(0); }
-
-    .btn-gold::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.28) 50%, transparent 70%);
-      transform: translateX(-120%);
-      transition: transform 0s;
-    }
-    .btn-gold:hover::after {
-      transform: translateX(120%);
-      transition: transform 0.5s ease;
-    }
-
-    .btn-lg   { padding: 18px 40px; font-size: 17px; border-radius: 16px; }
-    .btn-sm   { padding: 9px 18px; font-size: 13px; border-radius: 10px; }
-    .btn-full { width: 100%; }
-
-    /* ── REVEAL ── */
-    .rv {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity .6s var(--ease), transform .6s var(--ease);
-    }
-    .rv.on { opacity: 1; transform: translateY(0); }
-    .rv.d1 { transition-delay: .08s; }
-    .rv.d2 { transition-delay: .16s; }
-    .rv.d3 { transition-delay: .24s; }
-    .rv.d4 { transition-delay: .32s; }
-
-    /* ════════════════════ HERO ════════════════════ */
-    .hero {
-      position: relative;
-      min-height: 100svh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 120px 24px 100px;
-      overflow: hidden;
-    }
-
-    /* Giant background word */
-    .hero-bg-word {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: clamp(130px, 42vw, 340px);
-      font-weight: 900;
-      letter-spacing: -0.05em;
-      color: rgba(240, 168, 0, 0.038);
-      pointer-events: none;
-      user-select: none;
-      line-height: 1;
-      overflow: hidden;
-    }
-
-    /* Radial glow */
-    .hero-glow {
-      position: absolute;
-      top: -5%; left: 50%;
-      width: 900px; height: 700px;
-      transform: translateX(-50%);
-      background: radial-gradient(ellipse 55% 45% at 50% 45%, rgba(240,168,0,0.11), transparent 70%);
-      pointer-events: none;
-      animation: glow-breathe 7s ease-in-out infinite;
-    }
-    @keyframes glow-breathe {
-      0%, 100% { opacity: .8; transform: translateX(-50%) scale(1); }
-      50%       { opacity: 1;  transform: translateX(-50%) scale(1.07); }
-    }
-
-    /* Badge */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--gold-dim);
-      border: 1px solid var(--gold-brd);
-      color: var(--gold);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: .02em;
-      padding: 5px 14px;
-      border-radius: 100px;
-      margin-bottom: 28px;
-      position: relative;
-      z-index: 1;
-      animation: badge-in .8s var(--ease) both;
-    }
-    @keyframes badge-in {
-      from { opacity: 0; transform: translateY(-8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .badge-dot {
-      width: 6px; height: 6px;
-      background: var(--green);
-      border-radius: 50%;
-      flex-shrink: 0;
-      position: relative;
-    }
-    .badge-dot::after {
-      content: '';
-      position: absolute; inset: -3px;
-      border-radius: 50%;
-      background: var(--green);
-      opacity: .3;
-      animation: ping 2s ease-out infinite;
-    }
-    @keyframes ping {
-      0%   { transform: scale(1); opacity: .3; }
-      100% { transform: scale(2.8); opacity: 0; }
-    }
-
-    /* H1 */
-    .hero h1 {
-      font-size: clamp(38px, 10vw, 60px);
-      font-weight: 900;
-      letter-spacing: -2.5px;
-      line-height: 1.06;
-      max-width: 580px;
-      position: relative;
-      z-index: 1;
-      margin-bottom: 18px;
-      animation: fade-up .9s var(--ease) .1s both;
-    }
-    .hero h1 .g {
-      background: linear-gradient(90deg, var(--gold), var(--gold-2) 50%, var(--gold));
-      background-size: 200%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: shimmer 4s linear infinite 1.2s;
-    }
-    @keyframes shimmer {
-      from { background-position: 200%; }
-      to   { background-position: -200%; }
-    }
-
-    .hero-sub {
-      font-size: 16px;
-      color: var(--sec);
-      max-width: 370px;
-      margin-bottom: 44px;
-      line-height: 1.7;
-      position: relative; z-index: 1;
-      animation: fade-up .9s var(--ease) .2s both;
-    }
-
-    @keyframes fade-up {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .hero-actions {
-      position: relative; z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      animation: fade-up .9s var(--ease) .3s both;
-    }
-
-    .hero-meta {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      color: var(--muted);
-    }
-    .hero-meta .sep { width: 3px; height: 3px; background: var(--muted); border-radius: 50%; }
-
-    /* Scroll hint */
-    .scroll-hint {
-      position: absolute;
-      bottom: 32px; left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .12em;
-      animation: fade-up .8s var(--ease) 1.4s both;
-    }
-    .scroll-line {
-      width: 1px; height: 36px;
-      background: linear-gradient(to bottom, var(--gold-brd), transparent);
-      animation: scroll-blink 2s ease-in-out infinite;
-    }
-    @keyframes scroll-blink {
-      0%, 100% { opacity: .5; transform: scaleY(1); }
-      50%       { opacity: 1;  transform: scaleY(.7); }
-    }
-
-    /* ════════════════════ STATS ════════════════════ */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .stat { padding: 26px 12px; text-align: center; position: relative; }
-    .stat + .stat::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 24%; bottom: 24%;
-      width: 1px; background: var(--border);
-    }
-
-    .stat-v {
-      display: block;
-      font-size: 28px; font-weight: 900;
-      color: var(--gold);
-      letter-spacing: -1px;
-      line-height: 1; margin-bottom: 6px;
-      font-variant-numeric: tabular-nums;
-    }
-    .stat-l { font-size: 11px; color: var(--muted); font-weight: 500; }
-
-    /* ════════════════════ SECTION ════════════════════ */
-    .section {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 80px 24px;
-    }
-
-    .s-tag {
-      font-size: 11px; font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .14em;
-      color: var(--gold);
-      margin-bottom: 10px;
-    }
-
-    .section h2 {
-      font-size: clamp(28px, 6.5vw, 42px);
-      font-weight: 900;
-      letter-spacing: -1.2px;
-      line-height: 1.12;
-      margin-bottom: 40px;
-    }
-
-    hr.sep { border: none; border-top: 1px solid var(--border); }
-
-    /* ════════════════════ CALCULATOR ════════════════════ */
-    .calc-section {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .calc-inner {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 80px 24px;
-    }
-
-    .calc-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 28px;
-      transition: border-color .3s;
-    }
-    .calc-card:focus-within { border-color: var(--gold-brd); }
-
-    .presets {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
-
-    .pb {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--sec);
-      font-family: inherit;
-      font-size: 13px; font-weight: 600;
-      padding: 7px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all .13s;
-    }
-    .pb:hover { border-color: var(--gold-brd); color: var(--text); }
-    .pb.on    { background: var(--gold-dim); border-color: var(--gold-brd); color: var(--gold); }
-
-    .calc-body {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-
-    .calc-f {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px 18px;
-    }
-    .calc-f.g-side { border-color: rgba(240,168,0,0.18); background: rgba(240,168,0,0.04); }
-
-    .calc-f label {
-      display: block;
-      font-size: 10px; font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .1em;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    .calc-f input {
-      font-family: inherit;
-      font-size: 36px; font-weight: 900;
-      color: var(--text);
-      background: none;
-      border: none; outline: none;
-      width: 100%;
-      letter-spacing: -1.5px;
-      -moz-appearance: textfield;
-    }
-    .calc-f input::-webkit-outer-spin-button,
-    .calc-f input::-webkit-inner-spin-button { -webkit-appearance: none; }
-
-    .calc-out {
-      font-size: 36px; font-weight: 900;
-      color: var(--gold);
-      letter-spacing: -1.5px;
-      line-height: 1;
-      font-variant-numeric: tabular-nums;
-    }
-    .calc-out.flash { animation: num-flash .3s var(--ease); }
-    @keyframes num-flash {
-      0%   { color: var(--gold-2); }
-      100% { color: var(--gold); }
-    }
-
-    .calc-arr { color: var(--muted); font-size: 22px; text-align: center; }
-
-    .calc-rate {
-      font-size: 12px; color: var(--muted);
-      text-align: center;
-      margin-bottom: 6px;
-    }
-    .calc-rate b { color: var(--sec); font-weight: 600; }
-
-    .calc-save {
-      font-size: 12px;
-      color: var(--green);
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 20px;
-      opacity: 0;
-      transform: translateY(4px);
-      transition: opacity .3s, transform .3s;
-    }
-    .calc-save.on { opacity: 1; transform: translateY(0); }
-
-    /* ════════════════════ FEATURES (editorial) ════════════════════ */
-    .feat-list { display: flex; flex-direction: column; }
-
-    .feat-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      padding: 26px 0;
-      border-bottom: 1px solid var(--border);
-      transition: background .2s;
-    }
-    .feat-item:first-child { border-top: 1px solid var(--border); }
-
-    .feat-n {
-      font-size: 11px; font-weight: 700;
-      color: var(--gold);
-      letter-spacing: .1em;
-      padding-top: 4px;
-      flex-shrink: 0;
-      width: 24px;
-    }
-
-    .feat-title { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
-    .feat-desc  { font-size: 14px; color: var(--sec); line-height: 1.55; }
-
-    /* ════════════════════ REVIEWS ════════════════════ */
-    .reviews { display: flex; flex-direction: column; gap: 10px; }
-
-    .review {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 20px 22px;
-      transition: border-color .2s, transform .2s var(--ease);
-    }
-    .review:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-1px); }
-
-    .rev-top {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .ava {
-      width: 38px; height: 38px;
-      border-radius: 50%;
-      background: var(--gold-dim);
-      border: 1px solid var(--gold-brd);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; font-weight: 800;
-      color: var(--gold); flex-shrink: 0;
-    }
-
-    .rname  { font-size: 14px; font-weight: 700; }
-    .rdate  { font-size: 12px; color: var(--muted); }
-    .rstars { margin-left: auto; color: var(--gold); font-size: 13px; letter-spacing: 1px; }
-    .rtext  { font-size: 14px; color: var(--sec); line-height: 1.6; }
-
-    /* ════════════════════ FAQ ════════════════════ */
-    .faqs { display: flex; flex-direction: column; gap: 2px; }
-
-    .faq-item {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: border-color .2s;
-    }
-    .faq-item.open { border-color: rgba(240,168,0,0.16); }
-
-    .faq-q {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 18px 20px;
-      background: none; border: none;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 15px; font-weight: 600;
-      text-align: left; cursor: pointer;
-      line-height: 1.4;
-    }
-
-    .faq-ico {
-      flex-shrink: 0;
-      color: var(--muted);
-      transition: transform .3s var(--ease), color .2s;
-    }
-    .faq-item.open .faq-ico { transform: rotate(180deg); color: var(--gold); }
-
-    .faq-a {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows .35s var(--ease);
-    }
-    .faq-item.open .faq-a { grid-template-rows: 1fr; }
-
-    .faq-in {
-      overflow: hidden;
-      padding: 0 20px;
-      font-size: 14px; color: var(--sec);
-      line-height: 1.65;
-      transition: padding .35s var(--ease);
-    }
-    .faq-item.open .faq-in { padding: 0 20px 18px; }
-
-    /* ════════════════════ FINAL CTA — GOLD ════════════════════ */
-    .cta-gold {
-      background: var(--gold);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cta-gold-inner {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 88px 24px;
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* subtle texture inside gold section */
-    .cta-gold::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 80% 70% at 50% 100%, rgba(0,0,0,0.1), transparent);
-      pointer-events: none;
-    }
-
-    .cta-gold .s-tag { color: rgba(0,0,0,0.45); }
-
-    .cta-gold h2 {
-      font-size: clamp(30px, 7vw, 48px);
-      font-weight: 900;
-      letter-spacing: -1.5px;
-      color: #000;
-      margin-bottom: 12px;
-    }
-
-    .cta-gold p {
-      font-size: 16px;
-      color: rgba(0,0,0,0.6);
-      margin-bottom: 36px;
-      max-width: 340px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .btn-dark {
-      background: #000;
-      color: var(--gold);
-      padding: 18px 44px;
-      font-size: 17px;
-      border-radius: 16px;
-    }
-    .btn-dark:hover {
-      opacity: .85;
-      transform: translateY(-1px);
-      box-shadow: 0 12px 36px rgba(0,0,0,0.4);
-    }
-
-    /* ════════════════════ FOOTER ════════════════════ */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 28px 24px;
-      text-align: center;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.9;
-    }
-    footer a { color: var(--muted); text-decoration: none; transition: color .2s; }
-    footer a:hover { color: var(--sec); }
-
-    /* ════════════════════ STICKY CTA ════════════════════ */
-    .sticky {
-      display: none;
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      padding: 10px 16px 20px;
-      background: linear-gradient(to top, var(--bg) 55%, transparent);
-      z-index: 200;
-      pointer-events: none;
-      transform: translateY(100%);
-      transition: transform .4s var(--ease);
-    }
-    .sticky.on { transform: translateY(0); }
-    .sticky .btn { pointer-events: all; box-shadow: 0 8px 28px rgba(240,168,0,0.22); }
-
-    @media (max-width: 600px) { .sticky { display: block; } }
-
-    /* ════════ SCROLLBAR ════════ */
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); border-radius: 3px; }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- Custom cursor -->
+<!-- Cursor (desktop) -->
 <div id="cur"></div>
 <div id="cur-t"></div>
 
 <!-- Toast -->
 <div class="toast" id="toast">
   <div class="toast-ava" id="t-ava"></div>
-  <div>
-    <div class="toast-name" id="t-name"></div>
-    <div class="toast-sub"  id="t-sub"></div>
-  </div>
+  <div><div class="toast-title" id="t-name"></div><div class="toast-sub" id="t-sub"></div></div>
 </div>
 
 <!-- NAV -->
 <nav class="nav" id="nav">
   <a href="/" class="logo">T<em>Gold</em></a>
-  <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-sm">Купить голду</a>
+  <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold nav-btn">Купить голду</a>
 </nav>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-glow"></div>
+<!-- ══════════════════════════════ HERO ══════════════════════════════ -->
+<section class="hero" id="hero">
+  <canvas id="particles" aria-hidden="true"></canvas>
   <div class="hero-bg-word" aria-hidden="true">GOLD</div>
 
-  <div class="badge">
-    <span class="badge-dot"></span>
-    Бот онлайн · 10 000+ покупателей
-  </div>
+  <div class="hero-wrap">
+    <div class="badge" id="badge">
+      <span class="badge-dot"></span>
+      Бот онлайн · 10 000+ покупателей
+    </div>
 
-  <h1 id="h1" data-text="Голда для Standoff 2 без переплат">
-    Голда для <span class="g">Standoff&nbsp;2</span><br>без переплат
-  </h1>
+    <h1 class="hero-title" aria-label="Голда для Standoff 2 без переплат">
+      <span class="hl"><span class="hl-in">Голда для</span></span>
+      <span class="hl"><span class="hl-in accent">Standoff&nbsp;2</span></span>
+      <span class="hl"><span class="hl-in">без переплат</span></span>
+    </h1>
 
-  <p class="hero-sub">
-    Зачисление за 2 минуты. Курс 0.67₽ за 1G —<br>
-    берём комиссию маркета на себя.
-  </p>
+    <p class="hero-sub" id="hero-sub">
+      Зачисление за 2 минуты. Курс 0.67₽ за 1G —<br>
+      берём комиссию маркета на себя.
+    </p>
 
-  <div class="hero-actions">
-    <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-lg">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-      Открыть бота
-    </a>
-    <div class="hero-meta">
-      <span>СБП · Карта РФ</span><span class="sep"></span>
-      <span>USDT</span><span class="sep"></span>
-      <span>Без комиссии</span>
+    <div class="hero-actions" id="hero-cta">
+      <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-hero btn-mag">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        Открыть бота
+      </a>
+      <div class="hero-trust">
+        СБП · Карта РФ <span class="mid-dot"></span> USDT <span class="mid-dot"></span> Без комиссии
+      </div>
     </div>
   </div>
 
   <div class="scroll-hint" aria-hidden="true">
     <div class="scroll-line"></div>
-    скролл
+    <span>скролл</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════ STATS ══════════════════════════════ -->
+<div class="stats-bar" id="stats">
+  <div class="stat-cell">
+    <span class="stat-num" data-to="10" data-suf="K+">—</span>
+    <span class="stat-lbl">покупателей</span>
+  </div>
+  <div class="stat-cell">
+    <span class="stat-num" data-to="5" data-suf="M+">—</span>
+    <span class="stat-lbl">голды продано</span>
+  </div>
+  <div class="stat-cell">
+    <span class="stat-num" data-to="2" data-suf=" мин">—</span>
+    <span class="stat-lbl">зачисление</span>
   </div>
 </div>
 
-<!-- STATS -->
-<div class="stats">
-  <div class="stat rv">
-    <span class="stat-v" data-to="10" data-suf="K+">—</span>
-    <span class="stat-l">покупателей</span>
-  </div>
-  <div class="stat rv d1">
-    <span class="stat-v" data-to="5" data-suf="M+">—</span>
-    <span class="stat-l">голды продано</span>
-  </div>
-  <div class="stat rv d2">
-    <span class="stat-v" data-to="2" data-suf=" мин">—</span>
-    <span class="stat-l">зачисление</span>
-  </div>
-</div>
+<!-- ══════════════════════════════ CALCULATOR ══════════════════════════════ -->
+<section class="calc-section" id="calc">
+  <div class="s-inner">
+    <div class="s-head">
+      <span class="stag">Калькулятор</span>
+      <h2>Сколько голды<br>ты получишь?</h2>
+    </div>
 
-<!-- CALCULATOR -->
-<div class="calc-section">
-  <div class="calc-inner">
-    <div class="s-tag rv">Калькулятор</div>
-    <h2 class="rv d1">Сколько голды<br>ты получишь?</h2>
-
-    <div class="calc-card rv d2">
+    <div class="calc-card" id="calc-card">
       <div class="presets">
-        <button class="pb"    data-v="200">200₽</button>
-        <button class="pb"    data-v="500">500₽</button>
+        <button class="pb" data-v="200">200₽</button>
+        <button class="pb" data-v="500">500₽</button>
         <button class="pb on" data-v="1000">1 000₽</button>
-        <button class="pb"    data-v="2000">2 000₽</button>
-        <button class="pb"    data-v="5000">5 000₽</button>
+        <button class="pb" data-v="2000">2 000₽</button>
+        <button class="pb" data-v="5000">5 000₽</button>
       </div>
 
-      <div class="calc-body">
-        <div class="calc-f">
-          <label>Рубли</label>
-          <input id="rub" type="number" value="1000" min="1">
+      <div class="calc-display">
+        <div class="calc-col">
+          <label class="calc-lbl" for="rub-in">Рубли</label>
+          <div class="calc-num-wrap">
+            <input id="rub-in" class="calc-input" type="number" value="1000" min="1" aria-label="Сумма в рублях">
+            <span class="calc-sym">₽</span>
+          </div>
         </div>
-        <div class="calc-arr">→</div>
-        <div class="calc-f g-side">
-          <label>Голда</label>
-          <div class="calc-out" id="gold-out">1 492</div>
+
+        <div class="calc-divider" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+
+        <div class="calc-col calc-col-gold">
+          <label class="calc-lbl">Голда</label>
+          <div class="calc-num-wrap">
+            <div class="calc-output" id="gold-out">1 492</div>
+            <span class="calc-sym gold-sym">G</span>
+          </div>
         </div>
       </div>
 
-      <p class="calc-rate">Курс <b>0.67₽ за 1G</b> · комиссия маркета — за наш счёт</p>
-      <div class="calc-save" id="calc-save">✓ Комиссия маркета покрыта — платишь ниже рыночной цены</div>
+      <div class="calc-foot">
+        <span class="calc-rate">Курс <strong>0.67₽ / 1G</strong></span>
+        <span class="calc-note">Комиссия маркета — за наш счёт</span>
+      </div>
 
-      <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-full" style="margin-top:4px">
-        Купить голду в Telegram →
+      <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-full btn-mag" style="margin-top:8px">
+        Купить в Telegram →
       </a>
     </div>
   </div>
-</div>
+</section>
 
-<!-- FEATURES (editorial) -->
-<section class="section">
-  <div class="s-tag rv">Почему TGold</div>
-  <h2 class="rv d1">Быстро. Дёшево.<br>Без рисков.</h2>
+<!-- ══════════════════════════════ FEATURES ══════════════════════════════ -->
+<section class="feat-section" id="features">
+  <div class="s-inner">
+    <div class="s-head">
+      <span class="stag">Почему TGold</span>
+      <h2>Быстро.<br>Дёшево.<br>Без рисков.</h2>
+    </div>
 
-  <div class="feat-list">
-    <div class="feat-item rv d1">
-      <span class="feat-n">01</span>
-      <div>
-        <div class="feat-title">Зачисление за 2 минуты</div>
-        <div class="feat-desc">Голда приходит на баланс Standoff 2 автоматически сразу после оплаты. Без ожиданий и очередей.</div>
+    <div class="feat-list">
+      <div class="feat-track" aria-hidden="true"><div class="feat-line" id="feat-line"></div></div>
+
+      <div class="feat-item">
+        <span class="feat-n">01</span>
+        <div class="feat-body">
+          <h3 class="feat-title">Зачисление за 2 минуты</h3>
+          <p class="feat-desc">Голда приходит на баланс Standoff 2 автоматически сразу после оплаты — через официальный маркет. Никаких ожиданий.</p>
+        </div>
       </div>
-    </div>
-    <div class="feat-item rv d2">
-      <span class="feat-n">02</span>
-      <div>
-        <div class="feat-title">Курс 0.67₽/G — ниже маркета</div>
-        <div class="feat-desc">Берём комиссию внутриигрового маркета на себя. Ты платишь только за голду — без скрытых наценок.</div>
+
+      <div class="feat-item">
+        <span class="feat-n">02</span>
+        <div class="feat-body">
+          <h3 class="feat-title">Курс 0.67₽ за 1G</h3>
+          <p class="feat-desc">Берём комиссию внутриигрового маркета на себя. Ты платишь только за голду — без наценок и скрытых сборов.</p>
+        </div>
       </div>
-    </div>
-    <div class="feat-item rv d3">
-      <span class="feat-n">03</span>
-      <div>
-        <div class="feat-title">Аккаунт в полной безопасности</div>
-        <div class="feat-desc">Передача через официальный маркет Standoff 2. Нам нужен только никнейм — пароль не запрашиваем.</div>
+
+      <div class="feat-item">
+        <span class="feat-n">03</span>
+        <div class="feat-body">
+          <h3 class="feat-title">Аккаунт в безопасности</h3>
+          <p class="feat-desc">Передача исключительно через официальный маркет игры. Нам нужен только никнейм — пароль не запрашиваем никогда.</p>
+        </div>
       </div>
-    </div>
-    <div class="feat-item rv d4">
-      <span class="feat-n">04</span>
-      <div>
-        <div class="feat-title">Поддержка 24/7</div>
-        <div class="feat-desc">Отвечаем в Telegram в любое время. Голда не пришла — вернём деньги или дошлём.</div>
+
+      <div class="feat-item">
+        <span class="feat-n">04</span>
+        <div class="feat-body">
+          <h3 class="feat-title">Поддержка 24/7</h3>
+          <p class="feat-desc">Отвечаем в Telegram в любое время. Что-то пошло не так — вернём деньги или дошлём голду.</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<hr class="sep">
-
-<!-- REVIEWS -->
-<section class="section">
-  <div class="s-tag rv">Отзывы</div>
-  <h2 class="rv d1">Что говорят<br>покупатели</h2>
-
-  <div class="reviews">
-    <div class="review rv d1">
-      <div class="rev-top">
-        <div class="ava">К</div>
-        <div><div class="rname">Кирилл</div><div class="rdate">3 дня назад</div></div>
-        <div class="rstars">★★★★★</div>
-      </div>
-      <div class="rtext">Брал 3000G — пришло буквально за минуту. Уже третий раз покупаю, всё чётко и без вопросов</div>
+<!-- ══════════════════════════════ REVIEWS ══════════════════════════════ -->
+<section class="rev-section" id="reviews">
+  <div class="s-inner">
+    <div class="s-head">
+      <span class="stag">Отзывы</span>
+      <h2>Что говорят<br>покупатели</h2>
     </div>
-    <div class="review rv d2">
-      <div class="rev-top">
-        <div class="ava">Д</div>
-        <div><div class="rname">Даниил</div><div class="rdate">неделю назад</div></div>
-        <div class="rstars">★★★★★</div>
+
+    <div class="reviews-track">
+      <div class="rev-card">
+        <div class="rev-top">
+          <div class="rev-ava">К</div>
+          <div><div class="rev-name">Кирилл</div><div class="rev-date">3 дня назад</div></div>
+          <div class="rev-stars" aria-label="5 звёзд">★★★★★</div>
+        </div>
+        <p class="rev-text">Брал 3000G — пришло буквально за минуту. Уже третий раз покупаю, всё чётко и без вопросов</p>
       </div>
-      <div class="rtext">Боялся что кинут — не кинули. Заплатил через СБП, голда пришла быстро. Цена реально ниже чем везде</div>
-    </div>
-    <div class="review rv d3">
-      <div class="rev-top">
-        <div class="ava">А</div>
-        <div><div class="rname">Артём</div><div class="rdate">2 недели назад</div></div>
-        <div class="rstars">★★★★★</div>
+
+      <div class="rev-card">
+        <div class="rev-top">
+          <div class="rev-ava">Д</div>
+          <div><div class="rev-name">Даниил</div><div class="rev-date">неделю назад</div></div>
+          <div class="rev-stars" aria-label="5 звёзд">★★★★★</div>
+        </div>
+        <p class="rev-text">Боялся что кинут — не кинули. Заплатил через СБП, голда пришла быстро. Цена реально ниже чем везде</p>
       </div>
-      <div class="rtext">Купил 5000G для скинов — пришло за пару минут. Бот удобный, всё понятно с первого раза</div>
+
+      <div class="rev-card">
+        <div class="rev-top">
+          <div class="rev-ava">А</div>
+          <div><div class="rev-name">Артём</div><div class="rev-date">2 недели назад</div></div>
+          <div class="rev-stars" aria-label="5 звёзд">★★★★★</div>
+        </div>
+        <p class="rev-text">Купил 5000G для скинов — пришло за пару минут. Бот удобный, всё понятно с первого раза</p>
+      </div>
     </div>
   </div>
 </section>
 
-<hr class="sep">
+<!-- ══════════════════════════════ FAQ ══════════════════════════════ -->
+<section class="faq-section" id="faq">
+  <div class="s-inner">
+    <div class="s-head">
+      <span class="stag">FAQ</span>
+      <h2>Вопросы</h2>
+    </div>
 
-<!-- FAQ -->
-<section class="section">
-  <div class="s-tag rv">FAQ</div>
-  <h2 class="rv d1">Вопросы</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-btn" aria-expanded="false">
+          <span class="faq-n">01</span>
+          <span class="faq-q-text">Как происходит передача голды?</span>
+          <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-body"><div class="faq-in">Через официальный внутриигровой маркет Standoff 2. Ты выставляешь предмет на продажу, мы покупаем — голда зачисляется автоматически. Доступ к аккаунту нам не нужен.</div></div>
+      </div>
 
-  <div class="faqs">
-    <div class="faq-item open rv d1">
-      <button class="faq-q" aria-expanded="true">
-        Как происходит передача голды?
-        <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="faq-a"><div class="faq-in">Через официальный внутриигровой маркет Standoff 2. Ты выставляешь предмет на продажу, мы покупаем — голда зачисляется автоматически. Доступ к аккаунту нам не нужен.</div></div>
-    </div>
-    <div class="faq-item rv d2">
-      <button class="faq-q" aria-expanded="false">
-        Безопасно ли это для аккаунта?
-        <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="faq-a"><div class="faq-in">Да, полностью. Мы используем стандартный маркет игры — это обычная торговля между игроками. Нам нужен только твой никнейм. Пароль не запрашиваем никогда.</div></div>
-    </div>
-    <div class="faq-item rv d3">
-      <button class="faq-q" aria-expanded="false">
-        Почему цена ниже, чем в самой игре?
-        <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="faq-a"><div class="faq-in">Официальный магазин Standoff 2 берёт комиссию маркета с покупателя. Мы берём её на себя — поэтому ты получаешь больше голды за те же деньги.</div></div>
-    </div>
-    <div class="faq-item rv d4">
-      <button class="faq-q" aria-expanded="false">
-        Что если голда не пришла?
-        <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="faq-a"><div class="faq-in">Напиши в поддержку бота — разберёмся и либо дошлём голду, либо вернём деньги. Работаем 24/7.</div></div>
+      <div class="faq-item">
+        <button class="faq-btn" aria-expanded="false">
+          <span class="faq-n">02</span>
+          <span class="faq-q-text">Безопасно ли для аккаунта?</span>
+          <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-body"><div class="faq-in">Да, полностью. Используем стандартный маркет игры — обычная торговля между игроками. Нам нужен только никнейм. Пароль не запрашиваем никогда.</div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" aria-expanded="false">
+          <span class="faq-n">03</span>
+          <span class="faq-q-text">Почему цена ниже, чем в самой игре?</span>
+          <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-body"><div class="faq-in">Официальный магазин берёт комиссию маркета с покупателя. Мы берём её на себя — ты получаешь больше голды за те же деньги.</div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-btn" aria-expanded="false">
+          <span class="faq-n">04</span>
+          <span class="faq-q-text">Что если голда не пришла?</span>
+          <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-body"><div class="faq-in">Напиши в поддержку бота — разберёмся за несколько минут. Дошлём голду или вернём деньги. Работаем 24/7.</div></div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- FINAL CTA — GOLD BACKGROUND -->
-<div class="cta-gold rv">
-  <div class="cta-gold-inner">
-    <div class="s-tag">Начни прямо сейчас</div>
-    <h2>Голда за 2 минуты</h2>
-    <p>Открой бота в Telegram — никакой регистрации, просто нажми кнопку</p>
-    <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-dark">
+<!-- ══════════════════════════════ GOLD CTA ══════════════════════════════ -->
+<div class="gold-cta" id="gold-cta">
+  <div class="gold-cta-in">
+    <span class="stag stag-dark">Начни прямо сейчас</span>
+    <h2 class="gold-cta-h">Голда за 2 минуты</h2>
+    <p class="gold-cta-sub">Открой бота — никакой регистрации, просто нажми</p>
+    <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-dark btn-hero btn-mag">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
       Купить голду в Telegram
     </a>
@@ -968,223 +283,22 @@
 </div>
 
 <!-- FOOTER -->
-<footer>
-  <a href="https://t.me/TGoldRobot?start=yads">Поддержка в Telegram</a><br>
-  TGold — не является официальным продуктом Standoff 2 / AQUAPARK ENTERTAINMENT
+<footer class="footer">
+  <a href="https://t.me/TGoldRobot?start=yads">Поддержка в Telegram</a>
+  <span>TGold не является официальным продуктом Standoff 2 / AQUAPARK ENTERTAINMENT</span>
 </footer>
 
 <!-- STICKY CTA (mobile) -->
-<div class="sticky" id="sticky">
-  <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-full btn-lg">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.277-.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+<div class="sticky-cta" id="sticky">
+  <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-full">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
     Купить голду →
   </a>
 </div>
 
-<script>
-/* ── GRAIN TEXTURE ── */
-(function() {
-  const c = document.createElement('canvas');
-  c.width = c.height = 180;
-  const ctx = c.getContext('2d');
-  const img = ctx.createImageData(180, 180);
-  for (let i = 0; i < img.data.length; i += 4) {
-    const v = Math.random() * 255 | 0;
-    img.data[i] = img.data[i+1] = img.data[i+2] = v;
-    img.data[i+3] = Math.random() * 14 | 0;
-  }
-  ctx.putImageData(img, 0, 0);
-  const d = document.createElement('div');
-  d.style.cssText = 'position:fixed;inset:0;z-index:998;pointer-events:none;opacity:.55;background:url(' + c.toDataURL() + ') repeat;background-size:180px';
-  document.body.appendChild(d);
-})();
-
-/* ── CUSTOM CURSOR ── */
-(function() {
-  const cur = document.getElementById('cur');
-  const trail = document.getElementById('cur-t');
-  if (window.matchMedia('(pointer:fine)').matches) {
-    let mx = 0, my = 0, tx = 0, ty = 0;
-    document.addEventListener('mousemove', e => {
-      mx = e.clientX; my = e.clientY;
-      cur.style.left = mx + 'px';
-      cur.style.top  = my + 'px';
-    }, { passive: true });
-    (function loop() {
-      tx += (mx - tx) * 0.1;
-      ty += (my - ty) * 0.1;
-      trail.style.left = tx + 'px';
-      trail.style.top  = ty + 'px';
-      requestAnimationFrame(loop);
-    })();
-    document.querySelectorAll('a, button, .pb').forEach(el => {
-      el.addEventListener('mouseenter', () => { cur.classList.add('big'); trail.classList.add('big'); });
-      el.addEventListener('mouseleave', () => { cur.classList.remove('big'); trail.classList.remove('big'); });
-    });
-  }
-})();
-
-/* ── SCROLL REVEAL ── */
-const ro = new IntersectionObserver(es => es.forEach(e => {
-  if (e.isIntersecting) { e.target.classList.add('on'); ro.unobserve(e.target); }
-}), { threshold: 0.07, rootMargin: '0px 0px -36px 0px' });
-document.querySelectorAll('.rv').forEach(el => ro.observe(el));
-
-/* ── STATS COUNTER ── */
-function countUp(el) {
-  const to  = +el.dataset.to;
-  const suf = el.dataset.suf || '';
-  const dur = 1300;
-  const s   = performance.now();
-  (function f(now) {
-    const p = Math.min((now - s) / dur, 1);
-    const v = Math.floor((1 - Math.pow(1-p,3)) * to);
-    el.textContent = (p < 1 ? v : to) + suf;
-    if (p < 1) requestAnimationFrame(f);
-  })(s);
-}
-const so = new IntersectionObserver(es => es.forEach(e => {
-  if (e.isIntersecting) { countUp(e.target.querySelector('.stat-v')); so.unobserve(e.target); }
-}), { threshold: 0.4 });
-document.querySelectorAll('.stat').forEach(el => so.observe(el));
-
-/* ── SCRAMBLE HEADING ── */
-(function() {
-  const el = document.getElementById('h1');
-  const full = 'Голда для Standoff 2 без переплат';
-  const CHARS = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯ0123456789#@!';
-  const DUR = 1600;
-  let started = false;
-
-  function run(now, start) {
-    const p = Math.min((now - start) / DUR, 1);
-    const rev = Math.floor(p * full.length);
-    // rebuild inner HTML keeping the <span class="g"> wrapper for "Standoff 2"
-    const plain = full.split('').map((ch, i) => {
-      if (ch === ' ') return ' ';
-      if (i < rev)   return ch;
-      return CHARS[Math.random() * CHARS.length | 0];
-    }).join('');
-    // re-apply the gold span for "Standoff 2" (chars 10-19)
-    const before  = plain.slice(0, 10);
-    const middle  = plain.slice(10, 20);
-    const after   = plain.slice(20);
-    el.innerHTML  = before + '<span class="g">' + middle + '</span>' + after;
-    if (p < 1) requestAnimationFrame(t => run(t, start));
-    else el.innerHTML = 'Голда для <span class="g">Standoff&nbsp;2</span><br>без переплат';
-  }
-
-  // Fire after page load + small delay
-  setTimeout(() => {
-    requestAnimationFrame(t => run(t, t));
-  }, 400);
-})();
-
-/* ── CALCULATOR ── */
-const rubEl  = document.getElementById('rub');
-const outEl  = document.getElementById('gold-out');
-const saveEl = document.getElementById('calc-save');
-const RATE   = 0.67;
-let flashT;
-
-function calc(anim) {
-  const v = parseFloat(rubEl.value) || 0;
-  const g = v > 0 ? Math.floor(v / RATE) : 0;
-  outEl.textContent = g > 0 ? g.toLocaleString('ru-RU') : '—';
-  saveEl.classList.toggle('on', v > 0);
-  if (anim && v > 0) {
-    clearTimeout(flashT);
-    outEl.classList.remove('flash');
-    flashT = setTimeout(() => {
-      outEl.classList.add('flash');
-      outEl.addEventListener('animationend', () => outEl.classList.remove('flash'), { once: true });
-    }, 10);
-  }
-}
-
-rubEl.addEventListener('input', () => {
-  document.querySelectorAll('.pb').forEach(b => b.classList.remove('on'));
-  calc(true);
-});
-
-document.querySelectorAll('.pb').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.pb').forEach(b => b.classList.remove('on'));
-    btn.classList.add('on');
-    rubEl.value = btn.dataset.v;
-    calc(true);
-  });
-});
-
-calc(false);
-
-/* ── FAQ ── */
-document.querySelectorAll('.faq-q').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const item = btn.closest('.faq-item');
-    const open = item.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(i => {
-      i.classList.remove('open');
-      i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
-    });
-    if (!open) { item.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
-  });
-});
-
-/* ── NAV SCROLL ── */
-const nav = document.getElementById('nav');
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 60);
-}, { passive: true });
-
-/* ── STICKY CTA ── */
-const sticky = document.getElementById('sticky');
-const hero   = document.querySelector('.hero');
-const footer = document.querySelector('footer');
-let sOn = false;
-
-new IntersectionObserver(([e]) => {
-  if (!e.isIntersecting && !sOn) { sOn = true; sticky.classList.add('on'); }
-  else if (e.isIntersecting && sOn) { sOn = false; sticky.classList.remove('on'); }
-}).observe(hero);
-
-new IntersectionObserver(([e]) => {
-  if (e.isIntersecting) sticky.classList.remove('on');
-  else if (sOn) sticky.classList.add('on');
-}).observe(footer);
-
-/* ── TOAST NOTIFICATIONS ── */
-const TOASTS = [
-  { n: 'Никита А.',  g: '2 500G',  t: 'только что' },
-  { n: 'Дима К.',    g: '5 000G',  t: '1 мин назад' },
-  { n: 'Иван М.',    g: '1 000G',  t: '2 мин назад' },
-  { n: 'Серёга Л.',  g: '3 000G',  t: '4 мин назад' },
-  { n: 'Артём Ф.',   g: '750G',    t: '6 мин назад' },
-  { n: 'Макс Б.',    g: '10 000G', t: '8 мин назад' },
-  { n: 'Андрей П.',  g: '2 000G',  t: '10 мин назад'},
-];
-
-const tEl  = document.getElementById('toast');
-const tAva = document.getElementById('t-ava');
-const tNm  = document.getElementById('t-name');
-const tSub = document.getElementById('t-sub');
-let ti = 0;
-
-function showToast() {
-  const d = TOASTS[ti % TOASTS.length];
-  ti++;
-  tAva.textContent = d.n[0];
-  tNm.textContent  = d.n + ' получил ' + d.g;
-  tSub.textContent = d.t;
-  tEl.classList.add('on');
-  setTimeout(() => tEl.classList.remove('on'), 4000);
-}
-
-// First toast after 8s, then every 12–18s
-setTimeout(() => {
-  showToast();
-  setInterval(showToast, 14000 + Math.random() * 4000);
-}, 8000);
-</script>
+<!-- GSAP CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="main.js"></script>
 </body>
 </html>

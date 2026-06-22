@@ -213,6 +213,7 @@ function nav() {
 
 /* ── Hero Intro ─────────────────────────────────────────────── */
 function heroIntro() {
+  gsap.set('.hl-in', { yPercent: 110 }); // hide before GSAP takes over
   const tl = gsap.timeline({ delay: 0.15 });
 
   tl.to('#badge', {

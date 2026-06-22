@@ -282,7 +282,6 @@ h2 {
 .hl     { display: block; overflow: hidden; line-height: 1.02; }
 .hl-in  {
   display: block;
-  transform: translateY(110%);
   will-change: transform;
 }
 

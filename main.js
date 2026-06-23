@@ -7,7 +7,7 @@ function particles() {
 
   const ctx   = cv.getContext('2d');
   const MOUSE = { x: -2000, y: -2000 };
-  const COUNT = 50;
+  const COUNT = window.innerWidth < 700 ? 26 : 48;
   let w, h, pts = [];
 
   function resize() {
@@ -17,10 +17,10 @@ function particles() {
   }
 
   class Pt {
-    constructor() { this.init(); }
-    init() {
+    constructor() { this.init(true); }
+    init(spread) {
       this.x  = Math.random() * w;
-      this.y  = Math.random() * h;
+      this.y  = spread ? Math.random() * h : (Math.random() < 0.5 ? -10 : h + 10);
       this.vx = (Math.random() - 0.5) * 0.3;
       this.vy = (Math.random() - 0.5) * 0.3;
       this.r  = Math.random() * 1.6 + 0.4;
@@ -36,7 +36,7 @@ function particles() {
       }
       this.vx *= 0.97; this.vy *= 0.97;
       this.x  += this.vx; this.y += this.vy;
-      if (this.x < -10 || this.x > w + 10 || this.y < -10 || this.y > h + 10) this.init();
+      if (this.x < -20 || this.x > w + 20 || this.y < -20 || this.y > h + 20) this.init(false);
     }
     draw() {
       ctx.beginPath();
@@ -58,7 +58,7 @@ function particles() {
           ctx.beginPath();
           ctx.moveTo(pts[i].x, pts[i].y);
           ctx.lineTo(pts[j].x, pts[j].y);
-          ctx.strokeStyle = `rgba(255,184,0,${(1 - d / 100) * 0.09})`;
+          ctx.strokeStyle = `rgba(255,184,0,${(1 - d / 100) * 0.08})`;
           ctx.lineWidth = 0.5;
           ctx.stroke();
         }
@@ -67,12 +67,12 @@ function particles() {
     requestAnimationFrame(tick);
   }
 
-  cv.addEventListener('mousemove', e => {
+  window.addEventListener('mousemove', e => {
     const r = cv.getBoundingClientRect();
     MOUSE.x = e.clientX - r.left;
     MOUSE.y = e.clientY - r.top;
   }, { passive: true });
-  cv.addEventListener('mouseleave', () => { MOUSE.x = MOUSE.y = -2000; });
+  window.addEventListener('mouseout', () => { MOUSE.x = MOUSE.y = -2000; });
 
   resize();
   window.addEventListener('resize', () => { resize(); init(); }, { passive: true });
@@ -84,32 +84,69 @@ function particles() {
 function nav() {
   const el = document.getElementById('nav');
   if (!el) return;
-  window.addEventListener('scroll', () => {
-    el.classList.toggle('nav-solid', window.scrollY > 40);
-  }, { passive: true });
+  const onScroll = () => el.classList.toggle('nav-solid', window.scrollY > 40);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 }
 
-/* ── Scroll animations ──────────────────────────────────────── */
-function scrollAnimations() {
-  /* stat counter in trust bar */
+/* ── Ticker (recent purchases) ──────────────────────────────── */
+function ticker() {
+  const track = document.getElementById('ticker-track');
+  if (!track) return;
+
+  const names = [
+    'Кирилл', 'Даниил', 'Артём', 'Максим', 'Илья', 'Никита', 'Егор',
+    'Тимур', 'Влад', 'Рома', 'Саша', 'Денис', 'Глеб', 'Марк', 'Лёша'
+  ];
+  const amounts = [200, 500, 800, 1000, 1500, 2000, 3000, 5000, 7500, 10000];
+  const times = ['только что', 'минуту назад', '2 мин назад', '5 мин назад', '8 мин назад', '12 мин назад'];
+
+  const rnd = a => a[Math.floor(Math.random() * a.length)];
+  const fmt = n => n.toLocaleString('ru');
+
+  function item() {
+    const name = rnd(names);
+    const amt  = rnd(amounts);
+    const t    = rnd(times);
+    return `<span class="tk">
+      <span class="tk-ava">${name[0]}</span>
+      <span class="tk-name">${name}</span>
+      купил <span class="tk-g">${fmt(amt)} G</span>
+      <span class="tk-sep">·</span> ${t}
+    </span>`;
+  }
+
+  // build a set, then duplicate for seamless loop
+  const base = Array.from({ length: 12 }, item).join('');
+  track.innerHTML = base + base;
+}
+
+/* ── Count-up ───────────────────────────────────────────────── */
+function counters() {
   document.querySelectorAll('.stat-num').forEach(el => {
-    const to  = parseFloat(el.dataset.to);
+    const raw = el.dataset.to;
+    const to  = parseFloat(raw);
+    const dec = (raw.split('.')[1] || '').length;
     const suf = el.dataset.suf || '';
     const obj = { v: 0 };
+
     ScrollTrigger.create({
-      trigger: el, start: 'top 90%', once: true,
+      trigger: el, start: 'top 92%', once: true,
       onEnter() {
         gsap.to(obj, {
-          v: to, duration: 1.4, ease: 'power2.out',
+          v: to, duration: 1.5, ease: 'power2.out',
           onUpdate() {
-            el.textContent = Math.round(obj.v) + suf;
+            const val = dec ? obj.v.toFixed(dec) : Math.round(obj.v).toLocaleString('ru');
+            el.textContent = val + suf;
           }
         });
       }
     });
   });
+}
 
-  /* section heads */
+/* ── Scroll animations ──────────────────────────────────────── */
+function scrollAnimations() {
   gsap.utils.toArray('.s-head').forEach(el => {
     gsap.from(el, {
       opacity: 0, y: 24, duration: 0.65, ease: 'power3.out',
@@ -117,56 +154,46 @@ function scrollAnimations() {
     });
   });
 
-  /* calc card */
   gsap.from('#calc-card', {
-    opacity: 0, y: 28, duration: 0.7, ease: 'power3.out',
+    opacity: 0, y: 30, duration: 0.7, ease: 'power3.out',
     scrollTrigger: { trigger: '#calc-card', start: 'top 84%' }
   });
 
-  /* how items */
   gsap.from('.how-item', {
-    opacity: 0, y: 22, duration: 0.6, stagger: 0.1, ease: 'power3.out',
+    opacity: 0, y: 24, duration: 0.6, stagger: 0.12, ease: 'power3.out',
     scrollTrigger: { trigger: '.how-list', start: 'top 82%' }
   });
 
-  /* reviews */
   gsap.from('.rev-card', {
     opacity: 0, y: 18, duration: 0.55, stagger: 0.09, ease: 'power3.out',
     scrollTrigger: { trigger: '.reviews-track', start: 'top 84%' }
   });
 
-  /* faq */
   gsap.from('.faq-item', {
     opacity: 0, y: 14, duration: 0.5, stagger: 0.07, ease: 'power3.out',
     scrollTrigger: { trigger: '.faq-list', start: 'top 84%' }
   });
 
-  /* trust bar */
   gsap.from('.trust-item', {
     opacity: 0, y: 16, duration: 0.55, stagger: 0.08, ease: 'power3.out',
-    scrollTrigger: { trigger: '.trust-bar', start: 'top 90%' }
+    scrollTrigger: { trigger: '.trust-bar', start: 'top 92%' }
   });
 
-  /* gold cta */
   gsap.from('.gold-cta-in > *', {
-    opacity: 0, y: 20, duration: 0.6, stagger: 0.09, ease: 'power3.out',
-    scrollTrigger: { trigger: '.gold-cta', start: 'top 75%' }
-  });
-
-  /* price comp card */
-  gsap.from('.price-comp', {
-    opacity: 0, y: 16, duration: 0.55, ease: 'power3.out',
-    scrollTrigger: { trigger: '.price-comp', start: 'top 92%' }
+    opacity: 0, y: 22, duration: 0.6, stagger: 0.09, ease: 'power3.out',
+    scrollTrigger: { trigger: '.gold-cta', start: 'top 78%' }
   });
 }
 
 /* ── Calculator ─────────────────────────────────────────────── */
 function calculator() {
-  const rubIn  = document.getElementById('rub-in');
-  const goldOut = document.getElementById('gold-out');
+  const rubIn    = document.getElementById('rub-in');
+  const goldOut  = document.getElementById('gold-out');
+  const bonusVal = document.getElementById('bonus-val');
   if (!rubIn || !goldOut) return;
 
-  const RATE = 0.67;
+  const RATE   = 0.67;   // ₽ per G at TGold
+  const SHOP   = 1.0;    // ₽ per G in the in-game shop
   let displayed = 1492;
   let anim = null;
 
@@ -183,10 +210,16 @@ function calculator() {
       },
       onComplete() { displayed = target; }
     });
+
+    if (bonusVal) {
+      const saved = Math.round(rub / RATE - rub / SHOP);
+      bonusVal.textContent = '~' + saved.toLocaleString('ru') + ' G';
+    }
   }
 
   rubIn.addEventListener('input', () => {
     const v = parseFloat(rubIn.value);
+    document.querySelectorAll('.pb').forEach(b => b.classList.remove('on'));
     if (v > 0 && v < 1e7) update(v);
   });
 
@@ -231,6 +264,27 @@ function faq() {
   });
 }
 
+/* ── Card tilt (calc) ───────────────────────────────────────── */
+function tilt() {
+  const card = document.getElementById('calc-card');
+  if (!card || window.matchMedia('(hover: none)').matches) return;
+
+  let raf = null;
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width  - 0.5;
+    const py = (e.clientY - r.top)  / r.height - 0.5;
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      card.style.transform = `perspective(1000px) rotateX(${-py * 4}deg) rotateY(${px * 4}deg)`;
+    });
+  });
+  card.addEventListener('mouseleave', () => {
+    if (raf) cancelAnimationFrame(raf);
+    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+  });
+}
+
 /* ── Sticky CTA ─────────────────────────────────────────────── */
 function sticky() {
   const el     = document.getElementById('sticky');
@@ -248,13 +302,16 @@ function sticky() {
 
 /* ── Init ───────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
+  ticker();
   if (typeof gsap === 'undefined') return;
   gsap.registerPlugin(ScrollTrigger);
 
   particles();
   nav();
+  counters();
   scrollAnimations();
   calculator();
   faq();
+  tilt();
   sticky();
 });

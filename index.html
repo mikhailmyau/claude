@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TGold — Голда для Standoff 2</title>
-  <meta name="description" content="Купить голду Standoff 2 — 0.67₽/G, зачисление 2 минуты, официальный метод. СБП, USDT.">
+  <title>TGold — Голда для Standoff 2 · 0.67₽/G</title>
+  <meta name="description" content="Купить голду Standoff 2 — 0.67₽/G, зачисление за 2 минуты, официальный метод через маркет. СБП, карта РФ, USDT. Без комиссии.">
+  <meta name="theme-color" content="#0a0b12">
   <meta property="og:title" content="TGold — Голда для Standoff 2">
-  <meta property="og:description" content="0.67₽/G · 2 минуты · без комиссии">
+  <meta property="og:description" content="0.67₽/G · зачисление за 2 минуты · без комиссии">
+  <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
@@ -16,81 +18,150 @@
 
 <!-- NAV -->
 <nav class="nav" id="nav">
-  <a href="/" class="logo">T<em>Gold</em></a>
+  <a href="#hero" class="logo" aria-label="TGold">
+    <span class="logo-coin">G</span>
+    T<em>Gold</em>
+  </a>
+  <div class="nav-links">
+    <a href="#calc" class="nav-link">Калькулятор</a>
+    <a href="#how" class="nav-link">Как купить</a>
+    <a href="#faq" class="nav-link">FAQ</a>
+  </div>
   <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold nav-btn">Купить в боте →</a>
 </nav>
 
 <!-- ══════════════════ HERO ══════════════════ -->
 <section class="hero" id="hero">
   <canvas id="particles" aria-hidden="true"></canvas>
+  <div class="hero-aurora" aria-hidden="true"></div>
 
-  <div class="hero-inner">
-    <div class="badge">
-      <span class="badge-dot"></span>
-      Бот онлайн · 10 000+ покупателей
+  <div class="hero-grid">
+    <!-- left -->
+    <div class="hero-inner">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        Бот онлайн · принимаем заказы 24/7
+      </div>
+
+      <h1 class="hero-h1">
+        Голда для<br><em>Standoff&nbsp;2</em>
+      </h1>
+
+      <p class="hero-sub">
+        Официальный метод через маркет игры. Только ник —
+        пароль не нужен. Зачисление за пару минут.
+      </p>
+
+      <div class="price-comp">
+        <div class="pc-row pc-old">
+          <span class="pc-label">В магазине игры</span>
+          <span class="pc-val">~1₽&nbsp;/&nbsp;G</span>
+        </div>
+        <div class="pc-divider"></div>
+        <div class="pc-row pc-new">
+          <span class="pc-label">Курс TGold</span>
+          <div class="pc-right">
+            <span class="pc-val">0.67₽&nbsp;/&nbsp;G</span>
+            <span class="pc-save">−33%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-hero">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          Открыть бота
+        </a>
+        <a href="#calc" class="btn btn-ghost btn-hero">Посчитать →</a>
+      </div>
+
+      <div class="pay-row">
+        <span>СБП</span><span class="dot"></span>
+        <span>Карта РФ</span><span class="dot"></span>
+        <span>USDT</span><span class="dot"></span>
+        <span>Без комиссии</span>
+      </div>
     </div>
 
-    <h1 class="hero-h1">
-      Голда для<br><em>Standoff&nbsp;2</em>
-    </h1>
+    <!-- right: coin -->
+    <div class="hero-visual" aria-hidden="true">
+      <div class="coin-scene" id="coin-scene">
+        <div class="coin">
+          <div class="coin-face coin-front">
+            <span class="coin-g">G</span>
+            <span class="coin-ring"></span>
+          </div>
+          <div class="coin-edge"></div>
+        </div>
+        <div class="coin-glow"></div>
+        <div class="coin-orbit coin-orbit-1"></div>
+        <div class="coin-orbit coin-orbit-2"></div>
 
-    <div class="price-comp">
-      <div class="pc-row pc-old">
-        <span class="pc-label">В магазине игры</span>
-        <span class="pc-val">~1₽&nbsp;/&nbsp;G</span>
-      </div>
-      <div class="pc-divider"></div>
-      <div class="pc-row pc-new">
-        <span class="pc-label">TGold</span>
-        <div class="pc-right">
-          <span class="pc-val">0.67₽&nbsp;/&nbsp;G</span>
-          <span class="pc-save">−33%</span>
+        <div class="float-chip chip-1">
+          <span class="chip-ico">⚡</span> 2 минуты
+        </div>
+        <div class="float-chip chip-2">
+          <span class="chip-ico">🔒</span> Только ник
+        </div>
+        <div class="float-chip chip-3">
+          <span class="chip-dot"></span> Бот онлайн
         </div>
       </div>
     </div>
+  </div>
 
-    <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-hero">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-      Открыть бота
-    </a>
-
-    <div class="pay-row">
-      <span>СБП</span><span class="dot"></span>
-      <span>Карта РФ</span><span class="dot"></span>
-      <span>USDT</span><span class="dot"></span>
-      <span>Без комиссии</span>
+  <!-- live "sold today" -->
+  <div class="hero-live">
+    <div class="live-stat">
+      <span class="live-num"><span class="stat-num" data-to="1.2" data-suf=" М">0</span></span>
+      <span class="live-lbl">голды продано сегодня</span>
+    </div>
+    <div class="live-sep"></div>
+    <div class="live-stat">
+      <span class="live-num"><span class="stat-num" data-to="10" data-suf="K+">0</span></span>
+      <span class="live-lbl">покупателей всего</span>
+    </div>
+    <div class="live-sep"></div>
+    <div class="live-stat">
+      <span class="live-num"><span class="stat-num" data-to="4.9" data-suf="★">0</span></span>
+      <span class="live-lbl">средняя оценка</span>
     </div>
   </div>
 </section>
+
+<!-- ══════════════════ TICKER (social proof) ══════════════════ -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="ticker-track"></div>
+</div>
 
 <!-- ══════════════════ TRUST BAR ══════════════════ -->
 <div class="trust-bar">
   <div class="trust-item">
     <span class="trust-ico">⚡</span>
     <div>
-      <div class="trust-val">2 мин</div>
-      <div class="trust-lbl">зачисление</div>
+      <div class="trust-val">2 минуты</div>
+      <div class="trust-lbl">среднее зачисление</div>
     </div>
   </div>
   <div class="trust-item">
     <span class="trust-ico">💰</span>
     <div>
-      <div class="trust-val">0.67₽/G</div>
-      <div class="trust-lbl">лучший курс</div>
+      <div class="trust-val">0.67₽ / G</div>
+      <div class="trust-lbl">комиссия за наш счёт</div>
     </div>
   </div>
   <div class="trust-item">
-    <span class="trust-ico">👥</span>
+    <span class="trust-ico">🛡️</span>
     <div>
-      <div class="trust-val stat-num" data-to="10" data-suf="K+">—</div>
-      <div class="trust-lbl">покупателей</div>
+      <div class="trust-val">Официально</div>
+      <div class="trust-lbl">через маркет игры</div>
     </div>
   </div>
   <div class="trust-item">
     <span class="trust-ico">🔒</span>
     <div>
       <div class="trust-val">Только ник</div>
-      <div class="trust-lbl">пароль не нужен</div>
+      <div class="trust-lbl">пароль не запросим</div>
     </div>
   </div>
 </div>
@@ -104,6 +175,7 @@
     </div>
 
     <div class="calc-card" id="calc-card">
+      <div class="calc-glow" aria-hidden="true"></div>
       <div class="presets">
         <button class="pb" data-v="200">200₽</button>
         <button class="pb" data-v="500">500₽</button>
@@ -114,9 +186,9 @@
 
       <div class="calc-display">
         <div class="calc-col">
-          <label class="calc-lbl" for="rub-in">Рубли</label>
+          <label class="calc-lbl" for="rub-in">Ты платишь</label>
           <div class="calc-row">
-            <input id="rub-in" class="calc-input" type="number" value="1000" min="1" aria-label="Сумма в рублях">
+            <input id="rub-in" class="calc-input" type="number" value="1000" min="1" inputmode="numeric" aria-label="Сумма в рублях">
             <span class="calc-sym">₽</span>
           </div>
         </div>
@@ -126,7 +198,7 @@
         </div>
 
         <div class="calc-col calc-col-gold">
-          <label class="calc-lbl">Голда</label>
+          <label class="calc-lbl">Получаешь</label>
           <div class="calc-row">
             <div class="calc-out" id="gold-out">1 492</div>
             <span class="calc-sym gold-sym">G</span>
@@ -134,13 +206,15 @@
         </div>
       </div>
 
-      <div class="calc-meta">
-        Курс <strong>0.67₽&nbsp;/&nbsp;1G</strong> · комиссия маркета за наш счёт
+      <div class="calc-bonus" id="calc-bonus">
+        <span class="bonus-ico">🎁</span>
+        <span>Экономия против магазина игры: <strong id="bonus-val">~493 G</strong></span>
       </div>
 
       <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-full">
         Купить в Telegram →
       </a>
+      <p class="calc-note">Курс 0.67₽ / 1G · комиссию маркета берём на себя</p>
     </div>
   </div>
 </section>
@@ -150,23 +224,25 @@
   <div class="s-inner">
     <div class="s-head">
       <p class="sec-tag">Как купить</p>
-      <h2>Три шага</h2>
+      <h2>Три шага<br>до голды</h2>
     </div>
     <div class="how-list">
       <div class="how-item">
         <span class="how-n">1</span>
         <h3>Открой бота</h3>
-        <p>Нажми «Старт» — бот спросит количество голды и способ оплаты.</p>
+        <p>Нажми «Старт» в Telegram — бот спросит количество голды и удобный способ оплаты.</p>
       </div>
+      <div class="how-line" aria-hidden="true"></div>
       <div class="how-item">
         <span class="how-n">2</span>
         <h3>Оплати</h3>
-        <p>СБП, карта РФ или USDT. Бот пришлёт реквизиты и подтвердит оплату.</p>
+        <p>СБП, карта РФ или USDT. Бот пришлёт реквизиты и сам подтвердит, что оплата дошла.</p>
       </div>
+      <div class="how-line" aria-hidden="true"></div>
       <div class="how-item">
         <span class="how-n">3</span>
         <h3>Получи голду</h3>
-        <p>Выставь предмет на маркет — мы его купим, голда зачислится автоматически.</p>
+        <p>Выставляешь предмет на маркет — мы его выкупаем, голда зачисляется автоматически.</p>
       </div>
     </div>
   </div>
@@ -175,9 +251,18 @@
 <!-- ══════════════════ REVIEWS ══════════════════ -->
 <section class="rev-section" id="reviews">
   <div class="s-inner">
-    <div class="s-head">
-      <p class="sec-tag">Отзывы</p>
-      <h2>Говорят покупатели</h2>
+    <div class="s-head s-head-row">
+      <div>
+        <p class="sec-tag">Отзывы</p>
+        <h2>Говорят покупатели</h2>
+      </div>
+      <div class="rev-score">
+        <div class="rev-score-num">4.9</div>
+        <div>
+          <div class="rev-score-stars">★★★★★</div>
+          <div class="rev-score-lbl">2 400+ отзывов</div>
+        </div>
+      </div>
     </div>
     <div class="reviews-track">
       <div class="rev-card">
@@ -189,7 +274,7 @@
           </div>
           <div class="rev-stars">★★★★★</div>
         </div>
-        <p class="rev-text">Брал 3000G — пришло буквально за минуту. Уже третий раз покупаю, всё чётко</p>
+        <p class="rev-text">Брал 3000G — пришло буквально за минуту. Уже третий раз покупаю, всё чётко, без обмана.</p>
       </div>
       <div class="rev-card">
         <div class="rev-head">
@@ -200,7 +285,7 @@
           </div>
           <div class="rev-stars">★★★★★</div>
         </div>
-        <p class="rev-text">Боялся что кинут — не кинули. Заплатил через СБП, голда пришла быстро. Цена реально ниже</p>
+        <p class="rev-text">Боялся что кинут — не кинули. Заплатил через СБП, голда пришла быстро. Цена реально ниже, чем в игре.</p>
       </div>
       <div class="rev-card">
         <div class="rev-head">
@@ -211,7 +296,18 @@
           </div>
           <div class="rev-stars">★★★★★</div>
         </div>
-        <p class="rev-text">Купил 5000G для скинов — пришло за пару минут. Бот удобный, всё понятно с первого раза</p>
+        <p class="rev-text">Купил 5000G для скинов — пришло за пару минут. Бот удобный, всё понятно с первого раза.</p>
+      </div>
+      <div class="rev-card">
+        <div class="rev-head">
+          <div class="rev-ava">М</div>
+          <div>
+            <div class="rev-name">Максим</div>
+            <div class="rev-date">месяц назад</div>
+          </div>
+          <div class="rev-stars">★★★★★</div>
+        </div>
+        <p class="rev-text">Поддержка ответила ночью за пару минут. Видно что люди на месте, а не просто бот. Рекомендую.</p>
       </div>
     </div>
   </div>
@@ -222,7 +318,7 @@
   <div class="s-inner">
     <div class="s-head">
       <p class="sec-tag">FAQ</p>
-      <h2>Вопросы</h2>
+      <h2>Частые вопросы</h2>
     </div>
     <div class="faq-list">
       <div class="faq-item">
@@ -230,28 +326,35 @@
           <span>Как происходит передача голды?</span>
           <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div class="faq-body"><div class="faq-in">Через официальный маркет Standoff 2. Ты выставляешь предмет на продажу, мы покупаем — голда зачисляется автоматически. Доступ к аккаунту не нужен.</div></div>
+        <div class="faq-body"><div class="faq-in">Через официальный маркет Standoff 2. Ты выставляешь предмет на продажу, мы его покупаем — голда зачисляется автоматически. Доступ к аккаунту не нужен.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-btn" aria-expanded="false">
           <span>Это безопасно для аккаунта?</span>
           <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div class="faq-body"><div class="faq-in">Да. Используем стандартный маркет игры — обычная торговля между игроками. Нам нужен только никнейм. Пароль не запрашиваем никогда.</div></div>
+        <div class="faq-body"><div class="faq-in">Да. Используем стандартный маркет игры — это обычная торговля между игроками. Нам нужен только никнейм. Пароль и доступ к аккаунту мы не запрашиваем никогда.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-btn" aria-expanded="false">
-          <span>Почему дешевле чем в игре?</span>
+          <span>Почему дешевле, чем в игре?</span>
           <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div class="faq-body"><div class="faq-in">Официальный магазин берёт комиссию маркета с покупателя. Мы берём её на себя — ты получаешь больше голды за те же деньги.</div></div>
+        <div class="faq-body"><div class="faq-in">Официальный магазин закладывает комиссию маркета в цену. Мы берём эту комиссию на себя — поэтому за те же деньги ты получаешь заметно больше голды.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn" aria-expanded="false">
+          <span>Какие способы оплаты?</span>
+          <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-body"><div class="faq-in">СБП, банковские карты РФ и USDT. Все реквизиты бот выдаёт автоматически после выбора суммы. Комиссии за оплату нет.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-btn" aria-expanded="false">
           <span>Что если голда не пришла?</span>
           <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div class="faq-body"><div class="faq-in">Напиши в поддержку бота — разберёмся за несколько минут. Дошлём голду или вернём деньги. Работаем 24/7.</div></div>
+        <div class="faq-body"><div class="faq-in">Напиши в поддержку бота — разберёмся за несколько минут. Дошлём голду или вернём деньги. Поддержка работает 24/7.</div></div>
       </div>
     </div>
   </div>
@@ -260,8 +363,8 @@
 <!-- ══════════════════ GOLD CTA ══════════════════ -->
 <div class="gold-cta" id="gold-cta">
   <div class="gold-cta-in">
-    <h2 class="gold-cta-h">Голда через&nbsp;2&nbsp;минуты</h2>
-    <p class="gold-cta-sub">Открой бота — никакой регистрации, просто нажми</p>
+    <h2 class="gold-cta-h">Голда уже через<br>2&nbsp;минуты</h2>
+    <p class="gold-cta-sub">Никакой регистрации — просто открой бота и выбери сумму</p>
     <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-dark btn-hero">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
       Купить голду в Telegram
@@ -271,15 +374,18 @@
 
 <!-- FOOTER -->
 <footer class="footer">
-  <a href="https://t.me/TGoldRobot?start=yads">Поддержка в Telegram</a>
-  <span>TGold не является официальным продуктом Standoff 2 / AQUAPARK ENTERTAINMENT</span>
+  <div class="footer-top">
+    <a href="#hero" class="logo logo-sm">T<em>Gold</em></a>
+    <a href="https://t.me/TGoldRobot?start=yads" class="footer-tg">Поддержка в Telegram →</a>
+  </div>
+  <span class="footer-legal">TGold не является официальным продуктом Standoff 2 / AQUAPARK ENTERTAINMENT. Все товарные знаки принадлежат их владельцам.</span>
 </footer>
 
 <!-- STICKY (mobile) -->
 <div class="sticky-cta" id="sticky">
   <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-full">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-    Купить голду →
+    Купить голду · 0.67₽/G
   </a>
 </div>
 

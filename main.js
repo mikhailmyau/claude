@@ -1,13 +1,15 @@
 'use strict';
 
-/* ── Particles ──────────────────────────────────────────────── */
+/* ── Particles (desktop only) ───────────────────────────────── */
 function particles() {
+  if (window.innerWidth < 1080) return; // skip on mobile/tablet
+
   const cv = document.getElementById('particles');
   if (!cv) return;
 
   const ctx   = cv.getContext('2d');
-  const MOUSE = { x: -2000, y: -2000 };
-  const COUNT = window.innerWidth < 700 ? 26 : 48;
+  const MOUSE = { x: -9999, y: -9999 };
+  const N     = 30;
   let w, h, pts = [];
 
   function resize() {
@@ -16,27 +18,27 @@ function particles() {
     h = cv.height = r.height;
   }
 
-  class Pt {
-    constructor() { this.init(true); }
-    init(spread) {
+  class P {
+    reset(spread) {
       this.x  = Math.random() * w;
       this.y  = spread ? Math.random() * h : (Math.random() < 0.5 ? -10 : h + 10);
-      this.vx = (Math.random() - 0.5) * 0.3;
-      this.vy = (Math.random() - 0.5) * 0.3;
-      this.r  = Math.random() * 1.6 + 0.4;
-      this.a  = Math.random() * 0.4 + 0.07;
+      this.vx = (Math.random() - 0.5) * 0.28;
+      this.vy = (Math.random() - 0.5) * 0.28;
+      this.r  = Math.random() * 1.5 + 0.3;
+      this.a  = Math.random() * 0.35 + 0.06;
     }
+    constructor() { this.reset(true); }
     update() {
       const dx = this.x - MOUSE.x, dy = this.y - MOUSE.y;
       const d  = Math.hypot(dx, dy);
-      if (d < 130 && d > 0) {
-        const f = ((130 - d) / 130) * 0.85;
+      if (d < 120 && d > 0) {
+        const f = ((120 - d) / 120) * 0.8;
         this.vx += (dx / d) * f;
         this.vy += (dy / d) * f;
       }
       this.vx *= 0.97; this.vy *= 0.97;
       this.x  += this.vx; this.y += this.vy;
-      if (this.x < -20 || this.x > w + 20 || this.y < -20 || this.y > h + 20) this.init(false);
+      if (this.x < -20 || this.x > w + 20 || this.y < -20 || this.y > h + 20) this.reset(false);
     }
     draw() {
       ctx.beginPath();
@@ -46,25 +48,25 @@ function particles() {
     }
   }
 
-  function init() { pts = Array.from({ length: COUNT }, () => new Pt()); }
+  pts = Array.from({ length: N }, () => new P());
 
-  function tick() {
+  function frame() {
     ctx.clearRect(0, 0, w, h);
     for (let i = 0; i < pts.length; i++) {
       pts[i].update(); pts[i].draw();
       for (let j = i + 1; j < pts.length; j++) {
         const d = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
-        if (d < 100) {
+        if (d < 90) {
           ctx.beginPath();
           ctx.moveTo(pts[i].x, pts[i].y);
           ctx.lineTo(pts[j].x, pts[j].y);
-          ctx.strokeStyle = `rgba(255,184,0,${(1 - d / 100) * 0.08})`;
+          ctx.strokeStyle = `rgba(255,184,0,${(1 - d / 90) * 0.08})`;
           ctx.lineWidth = 0.5;
           ctx.stroke();
         }
       }
     }
-    requestAnimationFrame(tick);
+    requestAnimationFrame(frame);
   }
 
   window.addEventListener('mousemove', e => {
@@ -72,148 +74,111 @@ function particles() {
     MOUSE.x = e.clientX - r.left;
     MOUSE.y = e.clientY - r.top;
   }, { passive: true });
-  window.addEventListener('mouseout', () => { MOUSE.x = MOUSE.y = -2000; });
 
   resize();
-  window.addEventListener('resize', () => { resize(); init(); }, { passive: true });
-  init();
-  requestAnimationFrame(tick);
+  window.addEventListener('resize', () => {
+    resize();
+    pts = Array.from({ length: N }, () => new P());
+  }, { passive: true });
+  requestAnimationFrame(frame);
 }
 
 /* ── Nav ────────────────────────────────────────────────────── */
 function nav() {
   const el = document.getElementById('nav');
   if (!el) return;
-  const onScroll = () => el.classList.toggle('nav-solid', window.scrollY > 40);
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  const tick = () => el.classList.toggle('nav-solid', window.scrollY > 40);
+  window.addEventListener('scroll', tick, { passive: true });
+  tick();
 }
 
-/* ── Ticker (recent purchases) ──────────────────────────────── */
-function ticker() {
-  const track = document.getElementById('ticker-track');
-  if (!track) return;
-
-  const names = [
-    'Кирилл', 'Даниил', 'Артём', 'Максим', 'Илья', 'Никита', 'Егор',
-    'Тимур', 'Влад', 'Рома', 'Саша', 'Денис', 'Глеб', 'Марк', 'Лёша'
-  ];
-  const amounts = [200, 500, 800, 1000, 1500, 2000, 3000, 5000, 7500, 10000];
-  const times = ['только что', 'минуту назад', '2 мин назад', '5 мин назад', '8 мин назад', '12 мин назад'];
-
-  const rnd = a => a[Math.floor(Math.random() * a.length)];
-  const fmt = n => n.toLocaleString('ru');
-
-  function item() {
-    const name = rnd(names);
-    const amt  = rnd(amounts);
-    const t    = rnd(times);
-    return `<span class="tk">
-      <span class="tk-ava">${name[0]}</span>
-      <span class="tk-name">${name}</span>
-      купил <span class="tk-g">${fmt(amt)} G</span>
-      <span class="tk-sep">·</span> ${t}
-    </span>`;
-  }
-
-  // build a set, then duplicate for seamless loop
-  const base = Array.from({ length: 12 }, item).join('');
-  track.innerHTML = base + base;
-}
-
-/* ── Count-up ───────────────────────────────────────────────── */
-function counters() {
-  document.querySelectorAll('.stat-num').forEach(el => {
-    const raw = el.dataset.to;
-    const to  = parseFloat(raw);
-    const dec = (raw.split('.')[1] || '').length;
+/* ── Count-up for hero stats ────────────────────────────────── */
+function heroStats() {
+  const nums = document.querySelectorAll('.hstat-num');
+  nums.forEach(el => {
+    const to  = parseFloat(el.dataset.to);
+    const dec = parseInt(el.dataset.dec, 10) || 0;
     const suf = el.dataset.suf || '';
-    const obj = { v: 0 };
+    let started = false;
 
-    ScrollTrigger.create({
-      trigger: el, start: 'top 92%', once: true,
-      onEnter() {
-        gsap.to(obj, {
-          v: to, duration: 1.5, ease: 'power2.out',
-          onUpdate() {
-            const val = dec ? obj.v.toFixed(dec) : Math.round(obj.v).toLocaleString('ru');
-            el.textContent = val + suf;
-          }
-        });
+    function run() {
+      if (started) return;
+      started = true;
+      const obj = { v: 0 };
+      gsap.to(obj, {
+        v: to, duration: 1.6, ease: 'power2.out',
+        onUpdate() {
+          el.textContent = (dec ? obj.v.toFixed(dec) : Math.round(obj.v)) + suf;
+        }
+      });
+    }
+
+    // Fire immediately if already in viewport
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.95) {
+      run();
+    } else {
+      ScrollTrigger.create({
+        trigger: el, start: 'top 94%', once: true,
+        onEnter: run
+      });
+    }
+  });
+}
+
+/* ── Scroll reveal animations ───────────────────────────────── */
+function reveals() {
+  const cfg = [
+    { sel: '.s-head',        from: { y: 22, opacity: 0 }, start: '88%' },
+    { sel: '#calc-card',     from: { y: 28, opacity: 0 }, start: '85%' },
+    { sel: '.how-item',      from: { y: 22, opacity: 0 }, start: '82%', stagger: 0.1 },
+    { sel: '.rev-card',      from: { y: 18, opacity: 0 }, start: '84%', stagger: 0.09 },
+    { sel: '.faq-item',      from: { y: 14, opacity: 0 }, start: '84%', stagger: 0.07 },
+    { sel: '.trust-item',    from: { y: 16, opacity: 0 }, start: '92%', stagger: 0.07 },
+    { sel: '.gold-cta-in > *', from: { y: 20, opacity: 0 }, start: '78%', stagger: 0.09 },
+    { sel: '.price-comp',    from: { y: 14, opacity: 0 }, start: '90%' },
+  ];
+
+  cfg.forEach(({ sel, from, start, stagger }) => {
+    const els = document.querySelectorAll(sel);
+    if (!els.length) return;
+    gsap.from(els, {
+      ...from, duration: 0.6, ease: 'power3.out',
+      stagger: stagger || 0,
+      scrollTrigger: {
+        trigger: els[0],
+        start: `top ${start}`
       }
     });
   });
 }
 
-/* ── Scroll animations ──────────────────────────────────────── */
-function scrollAnimations() {
-  gsap.utils.toArray('.s-head').forEach(el => {
-    gsap.from(el, {
-      opacity: 0, y: 24, duration: 0.65, ease: 'power3.out',
-      scrollTrigger: { trigger: el, start: 'top 88%' }
-    });
-  });
-
-  gsap.from('#calc-card', {
-    opacity: 0, y: 30, duration: 0.7, ease: 'power3.out',
-    scrollTrigger: { trigger: '#calc-card', start: 'top 84%' }
-  });
-
-  gsap.from('.how-item', {
-    opacity: 0, y: 24, duration: 0.6, stagger: 0.12, ease: 'power3.out',
-    scrollTrigger: { trigger: '.how-list', start: 'top 82%' }
-  });
-
-  gsap.from('.rev-card', {
-    opacity: 0, y: 18, duration: 0.55, stagger: 0.09, ease: 'power3.out',
-    scrollTrigger: { trigger: '.reviews-track', start: 'top 84%' }
-  });
-
-  gsap.from('.faq-item', {
-    opacity: 0, y: 14, duration: 0.5, stagger: 0.07, ease: 'power3.out',
-    scrollTrigger: { trigger: '.faq-list', start: 'top 84%' }
-  });
-
-  gsap.from('.trust-item', {
-    opacity: 0, y: 16, duration: 0.55, stagger: 0.08, ease: 'power3.out',
-    scrollTrigger: { trigger: '.trust-bar', start: 'top 92%' }
-  });
-
-  gsap.from('.gold-cta-in > *', {
-    opacity: 0, y: 22, duration: 0.6, stagger: 0.09, ease: 'power3.out',
-    scrollTrigger: { trigger: '.gold-cta', start: 'top 78%' }
-  });
-}
-
 /* ── Calculator ─────────────────────────────────────────────── */
 function calculator() {
-  const rubIn    = document.getElementById('rub-in');
+  const rubIn   = document.getElementById('rub-in');
   const goldOut  = document.getElementById('gold-out');
-  const bonusVal = document.getElementById('bonus-val');
+  const bonusEl  = document.getElementById('bonus-val');
   if (!rubIn || !goldOut) return;
 
-  const RATE   = 0.67;   // ₽ per G at TGold
-  const SHOP   = 1.0;    // ₽ per G in the in-game shop
-  let displayed = 1492;
-  let anim = null;
+  const RATE = 0.67;
+  const SHOP = 1.0;
+  let prev = 1492, anim;
 
   function update(rub) {
     const target = Math.round(rub / RATE);
     if (anim) anim.kill();
-    const obj = { v: displayed };
+    const obj = { v: prev };
     anim = gsap.to(obj, {
-      v: target, duration: 0.4, ease: 'power2.out',
+      v: target, duration: 0.38, ease: 'power2.out',
       onUpdate() {
         const val = Math.round(obj.v);
         goldOut.textContent = val.toLocaleString('ru');
-        displayed = val;
-      },
-      onComplete() { displayed = target; }
+        prev = val;
+      }
     });
-
-    if (bonusVal) {
+    if (bonusEl) {
       const saved = Math.round(rub / RATE - rub / SHOP);
-      bonusVal.textContent = '~' + saved.toLocaleString('ru') + ' G';
+      bonusEl.textContent = '~' + saved.toLocaleString('ru') + ' G';
     }
   }
 
@@ -233,7 +198,7 @@ function calculator() {
   });
 }
 
-/* ── FAQ ────────────────────────────────────────────────────── */
+/* ── FAQ accordion ──────────────────────────────────────────── */
 function faq() {
   document.querySelectorAll('.faq-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -242,76 +207,69 @@ function faq() {
       const ico    = btn.querySelector('.faq-ico');
       const isOpen = btn.getAttribute('aria-expanded') === 'true';
 
+      // Close others
       document.querySelectorAll('.faq-item').forEach(other => {
         if (other === item) return;
         const ob = other.querySelector('.faq-btn');
         if (ob.getAttribute('aria-expanded') !== 'true') return;
         ob.setAttribute('aria-expanded', 'false');
-        gsap.to(other.querySelector('.faq-body'), { height: 0, duration: 0.3, ease: 'power2.in' });
-        gsap.to(other.querySelector('.faq-ico'),  { rotation: 0, duration: 0.26 });
+        gsap.to(other.querySelector('.faq-body'), { height: 0, duration: 0.28, ease: 'power2.in' });
+        gsap.to(other.querySelector('.faq-ico'),  { rotation: 0, duration: 0.24 });
       });
 
       if (isOpen) {
         btn.setAttribute('aria-expanded', 'false');
-        gsap.to(body, { height: 0,      duration: 0.3, ease: 'power2.in' });
-        gsap.to(ico,  { rotation: 0,    duration: 0.26 });
+        gsap.to(body, { height: 0,      duration: 0.28, ease: 'power2.in' });
+        gsap.to(ico,  { rotation: 0,    duration: 0.24 });
       } else {
         btn.setAttribute('aria-expanded', 'true');
-        gsap.to(body, { height: 'auto', duration: 0.42, ease: 'power3.out' });
-        gsap.to(ico,  { rotation: 180,  duration: 0.3 });
+        gsap.to(body, { height: 'auto', duration: 0.38, ease: 'power3.out' });
+        gsap.to(ico,  { rotation: 180,  duration: 0.28 });
       }
     });
   });
 }
 
-/* ── Card tilt (calc) ───────────────────────────────────────── */
-function tilt() {
-  const card = document.getElementById('calc-card');
-  if (!card || window.matchMedia('(hover: none)').matches) return;
-
-  let raf = null;
-  card.addEventListener('mousemove', e => {
-    const r = card.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width  - 0.5;
-    const py = (e.clientY - r.top)  / r.height - 0.5;
-    if (raf) cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => {
-      card.style.transform = `perspective(1000px) rotateX(${-py * 4}deg) rotateY(${px * 4}deg)`;
-    });
-  });
-  card.addEventListener('mouseleave', () => {
-    if (raf) cancelAnimationFrame(raf);
-    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
-  });
-}
-
 /* ── Sticky CTA ─────────────────────────────────────────────── */
 function sticky() {
-  const el     = document.getElementById('sticky');
-  const hero   = document.getElementById('hero');
-  const footer = document.querySelector('.footer');
+  const el   = document.getElementById('sticky');
+  const hero = document.getElementById('hero');
+  const cta  = document.querySelector('.gold-cta');
   if (!el || !hero) return;
 
   const io = new IntersectionObserver(entries => {
-    el.classList.toggle('sticky-hide', entries.some(e => e.isIntersecting));
-  }, { threshold: 0.1 });
+    const anyVisible = entries.some(e => e.isIntersecting);
+    el.classList.toggle('sticky-hide', anyVisible);
+  }, { threshold: 0.05 });
 
   io.observe(hero);
-  if (footer) io.observe(footer);
+  if (cta) io.observe(cta);
+}
+
+/* ── Smooth anchor links ────────────────────────────────────── */
+function anchors() {
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (!el) return;
+      e.preventDefault();
+      el.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
 }
 
 /* ── Init ───────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-  ticker();
+  anchors();
   if (typeof gsap === 'undefined') return;
   gsap.registerPlugin(ScrollTrigger);
 
   particles();
   nav();
-  counters();
-  scrollAnimations();
+  heroStats();
+  reveals();
   calculator();
   faq();
-  tilt();
   sticky();
 });

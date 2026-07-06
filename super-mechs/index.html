@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SUPER MECHS — сборка и битвы боевых роботов</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+</head>
+<body>
+  <!-- ======== ШАПКА ======== -->
+  <header id="topbar">
+    <div class="tb-left">
+      <div id="logo">SUPER<span>MECHS</span></div>
+      <div class="player-chip">
+        <span id="hdr-name" title="Кликни, чтобы сменить имя">Пилот</span>
+        <span class="lvl-badge">УР. <b id="hdr-level">1</b></span>
+        <div id="hdr-xpbar"><div id="hdr-xpbar-fill"></div></div>
+      </div>
+    </div>
+    <div class="tb-right">
+      <span class="currency" title="Золото">💰 <b id="hdr-gold">0</b></span>
+      <span class="currency tok" title="Токены">🔷 <b id="hdr-tokens">0</b></span>
+      <span class="currency" title="Arena Coins">🏆 <b id="hdr-coins">0</b></span>
+      <span class="currency" title="Ascension Relics">✨ <b id="hdr-relics">0</b></span>
+      <button id="btn-dailies" class="hdr-btn" title="Ежедневные задания">📋</button>
+      <button id="btn-sound" class="hdr-btn" title="Звук">🔊</button>
+      <button id="btn-reset" class="hdr-btn" title="Сбросить прогресс">↺</button>
+    </div>
+  </header>
+
+  <!-- ======== НАВИГАЦИЯ ======== -->
+  <nav id="nav">
+    <button class="nav-btn active" data-screen="workshop">🛠 МАСТЕРСКАЯ</button>
+    <button class="nav-btn" data-screen="campaign">🗺 КАМПАНИЯ</button>
+    <button class="nav-btn" data-screen="arena">🏟 АРЕНА</button>
+    <button class="nav-btn" data-screen="raid">☠ РЕЙД</button>
+    <button class="nav-btn" data-screen="shop">🛒 МАГАЗИН</button>
+  </nav>
+
+  <!-- ======== ЭКРАНЫ ======== -->
+  <main>
+    <section id="screen-workshop" class="screen active"></section>
+    <section id="screen-campaign" class="screen"></section>
+    <section id="screen-arena" class="screen"></section>
+    <section id="screen-raid" class="screen"></section>
+    <section id="screen-shop" class="screen"></section>
+  </main>
+
+  <!-- ======== БОЙ (оверлей) ======== -->
+  <div id="battle-overlay">
+    <div id="battle-title">БОЙ</div>
+    <canvas id="battle-canvas" width="1000" height="420"></canvas>
+    <div id="battle-controls"></div>
+    <div id="battle-log"></div>
+  </div>
+
+  <footer>
+    Фанатский ремейк-клон Super Mechs (Tacticsoft / Gato Games) в учебных целях ·
+    сохранение — в браузере (localStorage)
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/battle.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

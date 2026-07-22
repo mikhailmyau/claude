@@ -1,388 +1,234 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TGold — Голда для Standoff 2 · 0.67₽/G</title>
-  <meta name="description" content="Купить голду Standoff 2 — 0.67₽/G, зачисление за 2 минуты, официальный метод через маркет. СБП, карта РФ, USDT. Без комиссии.">
-  <meta name="theme-color" content="#0a0b12">
+  <title>Noa Verne — Creative Frontend Developer</title>
+  <meta name="description" content="Noa Verne is a creative frontend developer crafting expressive, motion-rich interfaces for the web.">
+  <meta name="theme-color" content="#0a0a0c">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="nav" id="nav">
-  <a href="#hero" class="logo">T<em>Gold</em></a>
-  <div class="nav-links">
-    <a href="#calc" class="nav-link">Калькулятор</a>
-    <a href="#how" class="nav-link">Как купить</a>
-    <a href="#faq" class="nav-link">FAQ</a>
-  </div>
-  <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold nav-btn" target="_blank" rel="noopener">Купить в боте →</a>
-</nav>
-
-<!-- ════════════ HERO ════════════ -->
-<section class="hero" id="hero">
-  <canvas id="particles" aria-hidden="true"></canvas>
-
-  <div class="hero-layout">
-    <!-- LEFT COPY -->
-    <div class="hero-copy">
-      <div class="badge">
-        <span class="badge-dot"></span>
-        Бот онлайн · 10 000+ покупателей
-      </div>
-
-      <h1 class="hero-h1">
-        Голда для<br><em>Standoff&nbsp;2</em>
-      </h1>
-
-      <p class="hero-sub">
-        Официальный метод через маркет игры. Только ник —
-        пароль не нужен. Зачисление за пару минут.
-      </p>
-
-      <div class="price-comp">
-        <div class="pc-row pc-old">
-          <span class="pc-label">В магазине игры</span>
-          <span class="pc-val">~1₽&nbsp;/&nbsp;G</span>
-        </div>
-        <div class="pc-divider"></div>
-        <div class="pc-row pc-new">
-          <span class="pc-label">Курс TGold</span>
-          <div class="pc-right">
-            <span class="pc-val">0.67₽&nbsp;/&nbsp;G</span>
-            <span class="pc-save">−33%</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="hero-actions">
-        <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-hero" target="_blank" rel="noopener">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-          Открыть бота
-        </a>
-        <a href="#calc" class="btn btn-ghost btn-hero">Посчитать →</a>
-      </div>
-
-      <div class="pay-row">
-        <span>СБП</span><span class="dot"></span>
-        <span>Карта РФ</span><span class="dot"></span>
-        <span>USDT</span><span class="dot"></span>
-        <span>Без комиссии</span>
-      </div>
-    </div>
-
-    <!-- RIGHT VISUAL (desktop only) -->
-    <div class="hero-visual" aria-hidden="true">
-      <div class="h-emblem">
-        <div class="h-halo"></div>
-        <div class="h-coin"><span class="h-g">G</span></div>
-        <div class="h-ring h-r1"></div>
-        <div class="h-ring h-r2"></div>
-        <div class="h-chip h-c1">⚡ 2 минуты</div>
-        <div class="h-chip h-c2">🔒 Только ник</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Stats strip -->
-  <div class="hero-stats">
-    <div class="hstat">
-      <span class="hstat-num" data-to="1.2" data-dec="1" data-suf=" М">0</span>
-      <span class="hstat-lbl">голды продано сегодня</span>
-    </div>
-    <div class="hstat-sep"></div>
-    <div class="hstat">
-      <span class="hstat-num" data-to="10" data-dec="0" data-suf="K+">0</span>
-      <span class="hstat-lbl">покупателей</span>
-    </div>
-    <div class="hstat-sep"></div>
-    <div class="hstat">
-      <span class="hstat-num" data-to="4.9" data-dec="1" data-suf="★">0</span>
-      <span class="hstat-lbl">средняя оценка</span>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════ TICKER (desktop/tablet only) ════════════ -->
-<div class="ticker" aria-hidden="true">
-  <div class="ticker-track">
-    <span class="tk"><span class="tk-a">К</span><b>Кирилл</b>&nbsp;купил&nbsp;<span class="tk-g">2 000 G</span><span class="tk-sep">·</span>минуту назад</span>
-    <span class="tk"><span class="tk-a">Д</span><b>Даниил</b>&nbsp;купил&nbsp;<span class="tk-g">5 000 G</span><span class="tk-sep">·</span>3 мин назад</span>
-    <span class="tk"><span class="tk-a">А</span><b>Артём</b>&nbsp;купил&nbsp;<span class="tk-g">1 000 G</span><span class="tk-sep">·</span>5 мин назад</span>
-    <span class="tk"><span class="tk-a">М</span><b>Максим</b>&nbsp;купил&nbsp;<span class="tk-g">500 G</span><span class="tk-sep">·</span>8 мин назад</span>
-    <span class="tk"><span class="tk-a">И</span><b>Илья</b>&nbsp;купил&nbsp;<span class="tk-g">10 000 G</span><span class="tk-sep">·</span>12 мин назад</span>
-    <span class="tk"><span class="tk-a">Н</span><b>Никита</b>&nbsp;купил&nbsp;<span class="tk-g">3 000 G</span><span class="tk-sep">·</span>15 мин назад</span>
-    <span class="tk"><span class="tk-a">Е</span><b>Егор</b>&nbsp;купил&nbsp;<span class="tk-g">800 G</span><span class="tk-sep">·</span>18 мин назад</span>
-    <span class="tk"><span class="tk-a">Т</span><b>Тимур</b>&nbsp;купил&nbsp;<span class="tk-g">7 500 G</span><span class="tk-sep">·</span>22 мин назад</span>
-    <!-- duplicate for seamless loop -->
-    <span class="tk"><span class="tk-a">К</span><b>Кирилл</b>&nbsp;купил&nbsp;<span class="tk-g">2 000 G</span><span class="tk-sep">·</span>минуту назад</span>
-    <span class="tk"><span class="tk-a">Д</span><b>Даниил</b>&nbsp;купил&nbsp;<span class="tk-g">5 000 G</span><span class="tk-sep">·</span>3 мин назад</span>
-    <span class="tk"><span class="tk-a">А</span><b>Артём</b>&nbsp;купил&nbsp;<span class="tk-g">1 000 G</span><span class="tk-sep">·</span>5 мин назад</span>
-    <span class="tk"><span class="tk-a">М</span><b>Максим</b>&nbsp;купил&nbsp;<span class="tk-g">500 G</span><span class="tk-sep">·</span>8 мин назад</span>
-    <span class="tk"><span class="tk-a">И</span><b>Илья</b>&nbsp;купил&nbsp;<span class="tk-g">10 000 G</span><span class="tk-sep">·</span>12 мин назад</span>
-    <span class="tk"><span class="tk-a">Н</span><b>Никита</b>&nbsp;купил&nbsp;<span class="tk-g">3 000 G</span><span class="tk-sep">·</span>15 мин назад</span>
-    <span class="tk"><span class="tk-a">Е</span><b>Егор</b>&nbsp;купил&nbsp;<span class="tk-g">800 G</span><span class="tk-sep">·</span>18 мин назад</span>
-    <span class="tk"><span class="tk-a">Т</span><b>Тимур</b>&nbsp;купил&nbsp;<span class="tk-g">7 500 G</span><span class="tk-sep">·</span>22 мин назад</span>
+<!-- ─── Preloader ─────────────────────────────────────────── -->
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="preloader-inner">
+    <span class="preloader-name">Noa&nbsp;Verne</span>
+    <span class="preloader-count" id="preloaderCount">00</span>
   </div>
 </div>
 
-<!-- ════════════ TRUST BAR ════════════ -->
-<div class="trust-bar">
-  <div class="trust-item">
-    <span class="trust-ico">⚡</span>
-    <div>
-      <div class="trust-val">2 минуты</div>
-      <div class="trust-lbl">среднее зачисление</div>
-    </div>
-  </div>
-  <div class="trust-item">
-    <span class="trust-ico">💰</span>
-    <div>
-      <div class="trust-val">0.67₽ / G</div>
-      <div class="trust-lbl">комиссия за наш счёт</div>
-    </div>
-  </div>
-  <div class="trust-item">
-    <span class="trust-ico">🛡️</span>
-    <div>
-      <div class="trust-val">Официально</div>
-      <div class="trust-lbl">через маркет игры</div>
-    </div>
-  </div>
-  <div class="trust-item">
-    <span class="trust-ico">🔒</span>
-    <div>
-      <div class="trust-val">Только ник</div>
-      <div class="trust-lbl">пароль не запросим</div>
-    </div>
-  </div>
+<!-- ─── Custom cursor ─────────────────────────────────────── -->
+<div class="cursor" id="cursor" aria-hidden="true">
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"><span class="cursor-label" id="cursorLabel"></span></div>
 </div>
 
-<!-- ════════════ CALCULATOR ════════════ -->
-<section class="calc-section" id="calc">
-  <div class="s-inner">
-    <div class="s-head">
-      <p class="sec-tag">Калькулятор</p>
-      <h2>Сколько голды<br>ты получишь?</h2>
-    </div>
+<!-- ─── Grain overlay ─────────────────────────────────────── -->
+<div class="grain" aria-hidden="true"></div>
 
-    <div class="calc-card" id="calc-card">
-      <div class="presets">
-        <button class="pb" data-v="200">200₽</button>
-        <button class="pb" data-v="500">500₽</button>
-        <button class="pb on" data-v="1000">1 000₽</button>
-        <button class="pb" data-v="2000">2 000₽</button>
-        <button class="pb" data-v="5000">5 000₽</button>
-      </div>
-
-      <div class="calc-display">
-        <div class="calc-col">
-          <label class="calc-lbl" for="rub-in">Ты платишь</label>
-          <div class="calc-row">
-            <input id="rub-in" class="calc-input" type="number" value="1000" min="1" inputmode="numeric" aria-label="Сумма в рублях">
-            <span class="calc-sym">₽</span>
-          </div>
-        </div>
-        <div class="calc-arrow" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </div>
-        <div class="calc-col calc-col-gold">
-          <label class="calc-lbl">Получаешь</label>
-          <div class="calc-row">
-            <div class="calc-out" id="gold-out">1 492</div>
-            <span class="calc-sym gold-sym">G</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="calc-bonus">
-        <span class="bonus-ico">🎁</span>
-        <span>Экономия против магазина игры: <strong id="bonus-val">~493 G</strong></span>
-      </div>
-
-      <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-full" target="_blank" rel="noopener">
-        Купить в Telegram →
-      </a>
-      <p class="calc-note">Курс 0.67₽ / 1G · комиссию маркета берём на себя</p>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════ HOW TO ════════════ -->
-<section class="how-section" id="how">
-  <div class="s-inner">
-    <div class="s-head">
-      <p class="sec-tag">Как купить</p>
-      <h2>Три шага<br>до голды</h2>
-    </div>
-    <div class="how-list">
-      <div class="how-item">
-        <span class="how-n">1</span>
-        <h3>Открой бота</h3>
-        <p>Нажми «Старт» в Telegram — бот спросит количество голды и удобный способ оплаты.</p>
-      </div>
-      <div class="how-item">
-        <span class="how-n">2</span>
-        <h3>Оплати</h3>
-        <p>СБП, карта РФ или USDT. Бот пришлёт реквизиты и подтвердит, что оплата дошла.</p>
-      </div>
-      <div class="how-item">
-        <span class="how-n">3</span>
-        <h3>Получи голду</h3>
-        <p>Выставляешь предмет на маркет — мы его выкупаем, голда зачисляется автоматически.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════ REVIEWS ════════════ -->
-<section class="rev-section" id="reviews">
-  <div class="s-inner">
-    <div class="s-head s-head-row">
-      <div>
-        <p class="sec-tag">Отзывы</p>
-        <h2>Говорят покупатели</h2>
-      </div>
-      <div class="rev-score">
-        <div class="rev-score-num">4.9</div>
-        <div>
-          <div class="rev-score-stars">★★★★★</div>
-          <div class="rev-score-lbl">2 400+ отзывов</div>
-        </div>
-      </div>
-    </div>
-    <div class="reviews-track">
-      <div class="rev-card">
-        <div class="rev-head">
-          <div class="rev-ava">К</div>
-          <div>
-            <div class="rev-name">Кирилл</div>
-            <div class="rev-date">3 дня назад</div>
-          </div>
-          <div class="rev-stars">★★★★★</div>
-        </div>
-        <p class="rev-text">Брал 3000G — пришло буквально за минуту. Уже третий раз покупаю, всё чётко, без обмана.</p>
-      </div>
-      <div class="rev-card">
-        <div class="rev-head">
-          <div class="rev-ava">Д</div>
-          <div>
-            <div class="rev-name">Даниил</div>
-            <div class="rev-date">неделю назад</div>
-          </div>
-          <div class="rev-stars">★★★★★</div>
-        </div>
-        <p class="rev-text">Боялся что кинут — не кинули. Заплатил через СБП, голда пришла быстро. Цена реально ниже, чем в игре.</p>
-      </div>
-      <div class="rev-card">
-        <div class="rev-head">
-          <div class="rev-ava">А</div>
-          <div>
-            <div class="rev-name">Артём</div>
-            <div class="rev-date">2 недели назад</div>
-          </div>
-          <div class="rev-stars">★★★★★</div>
-        </div>
-        <p class="rev-text">Купил 5000G для скинов — пришло за пару минут. Бот удобный, всё понятно с первого раза.</p>
-      </div>
-      <div class="rev-card">
-        <div class="rev-head">
-          <div class="rev-ava">М</div>
-          <div>
-            <div class="rev-name">Максим</div>
-            <div class="rev-date">месяц назад</div>
-          </div>
-          <div class="rev-stars">★★★★★</div>
-        </div>
-        <p class="rev-text">Поддержка ответила ночью за пару минут. Видно что люди на месте, а не просто бот. Рекомендую.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════ FAQ ════════════ -->
-<section class="faq-section" id="faq">
-  <div class="s-inner">
-    <div class="s-head">
-      <p class="sec-tag">FAQ</p>
-      <h2>Частые вопросы</h2>
-    </div>
-    <div class="faq-list">
-      <div class="faq-item">
-        <button class="faq-btn" aria-expanded="false">
-          <span>Как происходит передача голды?</span>
-          <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="faq-body"><div class="faq-in">Через официальный маркет Standoff 2. Ты выставляешь предмет на продажу, мы его покупаем — голда зачисляется автоматически. Доступ к аккаунту не нужен.</div></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-btn" aria-expanded="false">
-          <span>Это безопасно для аккаунта?</span>
-          <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="faq-body"><div class="faq-in">Да. Используем стандартный маркет игры — это обычная торговля между игроками. Нам нужен только никнейм. Пароль не запрашиваем никогда.</div></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-btn" aria-expanded="false">
-          <span>Почему дешевле, чем в игре?</span>
-          <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="faq-body"><div class="faq-in">Официальный магазин закладывает комиссию маркета в цену. Мы берём эту комиссию на себя — за те же деньги ты получаешь заметно больше голды.</div></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-btn" aria-expanded="false">
-          <span>Какие способы оплаты?</span>
-          <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="faq-body"><div class="faq-in">СБП, банковские карты РФ и USDT. Все реквизиты бот выдаёт автоматически. Комиссии за оплату нет.</div></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-btn" aria-expanded="false">
-          <span>Что если голда не пришла?</span>
-          <svg class="faq-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="faq-body"><div class="faq-in">Напиши в поддержку бота — разберёмся за несколько минут. Дошлём голду или вернём деньги. Поддержка 24/7.</div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════ GOLD CTA ════════════ -->
-<div class="gold-cta">
-  <div class="gold-cta-in">
-    <h2 class="gold-cta-h">Голда уже<br>через 2 минуты</h2>
-    <p class="gold-cta-sub">Никакой регистрации — просто открой бота и выбери сумму</p>
-    <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-dark btn-hero" target="_blank" rel="noopener">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-      Купить голду в Telegram
-    </a>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<footer class="footer">
-  <a href="#hero" class="logo logo-sm">T<em>Gold</em></a>
-  <div class="footer-right">
-    <a href="https://t.me/TGoldRobot?start=yads" class="footer-tg" target="_blank" rel="noopener">Поддержка в Telegram →</a>
-    <span class="footer-legal">TGold не является официальным продуктом Standoff 2 / AQUAPARK ENTERTAINMENT</span>
-  </div>
-</footer>
-
-<!-- STICKY CTA (mobile only) -->
-<div class="sticky-cta" id="sticky">
-  <a href="https://t.me/TGoldRobot?start=yads" class="btn btn-gold btn-full" target="_blank" rel="noopener">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-    Купить голду · 0.67₽/G
+<!-- ─── Nav ───────────────────────────────────────────────── -->
+<header class="nav" id="nav">
+  <a href="#top" class="nav-logo" data-magnetic>
+    <span class="nav-logo-mark">✦</span> noa verne
   </a>
-</div>
+  <nav class="nav-links" aria-label="Primary">
+    <a href="#work" class="nav-link"><span data-text="Work">Work</span></a>
+    <a href="#about" class="nav-link"><span data-text="About">About</span></a>
+    <a href="#contact" class="nav-link"><span data-text="Contact">Contact</span></a>
+  </nav>
+  <a href="#contact" class="nav-status" data-magnetic>
+    <span class="status-dot"></span>
+    <span class="status-text">Open for projects</span>
+  </a>
+</header>
 
-<script src="gsap.min.js" defer></script>
-<script src="ScrollTrigger.min.js" defer></script>
-<script src="main.js" defer></script>
+<main id="top">
+
+  <!-- ─── Hero ────────────────────────────────────────────── -->
+  <section class="hero" id="hero">
+    <div class="hero-orb" id="heroOrb" aria-hidden="true"></div>
+
+    <p class="hero-kicker reveal-line">
+      <span class="hero-kicker-rule"></span>
+      Creative frontend developer — Lisbon, PT
+    </p>
+
+    <h1 class="hero-title" aria-label="I build interfaces that feel alive">
+      <span class="hero-line"><span class="hero-line-inner">I build</span></span>
+      <span class="hero-line"><span class="hero-line-inner"><em>interfaces</em> that</span></span>
+      <span class="hero-line"><span class="hero-line-inner">feel <em class="hero-alive">alive</em><span class="hero-dot">.</span></span></span>
+    </h1>
+
+    <div class="hero-foot">
+      <p class="hero-blurb reveal-line">
+        Code as a creative medium — I design and engineer
+        motion-rich websites where every pixel has intent
+        and every interaction has a pulse.
+      </p>
+      <a href="#work" class="hero-cta" data-magnetic data-cursor="Scroll">
+        <span class="hero-cta-disc" aria-hidden="true">
+          <svg class="hero-cta-ring" viewBox="0 0 100 100">
+            <defs><path id="circlePath" d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0"/></defs>
+            <text><textPath href="#circlePath">selected work · scroll down · selected work ·&#160;</textPath></text>
+          </svg>
+          <span class="hero-cta-arrow">↓</span>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ─── Marquee ─────────────────────────────────────────── -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track" id="marqueeA">
+      <span>Design Engineering&ensp;✦&ensp;Creative Direction&ensp;✦&ensp;WebGL &amp; Motion&ensp;✦&ensp;Interaction Design&ensp;✦&ensp;</span>
+      <span>Design Engineering&ensp;✦&ensp;Creative Direction&ensp;✦&ensp;WebGL &amp; Motion&ensp;✦&ensp;Interaction Design&ensp;✦&ensp;</span>
+    </div>
+  </div>
+
+  <!-- ─── Work ────────────────────────────────────────────── -->
+  <section class="work" id="work">
+    <div class="section-head">
+      <h2 class="section-title"><em>Selected</em> work</h2>
+      <span class="section-index">4 projects — ’23–’26</span>
+    </div>
+
+    <ul class="work-list" id="workList">
+      <li class="work-row" data-preview="p1">
+        <a href="#contact" class="work-row-link" data-cursor="View">
+          <span class="work-num">01</span>
+          <span class="work-name">Lumen Archive</span>
+          <span class="work-meta">
+            <span class="work-tag">WebGL</span>
+            <span class="work-tag">Art direction</span>
+          </span>
+          <span class="work-year">2026</span>
+          <span class="work-arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+      <li class="work-row" data-preview="p2">
+        <a href="#contact" class="work-row-link" data-cursor="View">
+          <span class="work-num">02</span>
+          <span class="work-name">Studio Marée</span>
+          <span class="work-meta">
+            <span class="work-tag">E-commerce</span>
+            <span class="work-tag">Motion</span>
+          </span>
+          <span class="work-year">2025</span>
+          <span class="work-arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+      <li class="work-row" data-preview="p3">
+        <a href="#contact" class="work-row-link" data-cursor="View">
+          <span class="work-num">03</span>
+          <span class="work-name">Pulse / FM</span>
+          <span class="work-meta">
+            <span class="work-tag">Audio-reactive</span>
+            <span class="work-tag">Next.js</span>
+          </span>
+          <span class="work-year">2024</span>
+          <span class="work-arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+      <li class="work-row" data-preview="p4">
+        <a href="#contact" class="work-row-link" data-cursor="View">
+          <span class="work-num">04</span>
+          <span class="work-name">Terra Atlas</span>
+          <span class="work-meta">
+            <span class="work-tag">Data viz</span>
+            <span class="work-tag">Maps</span>
+          </span>
+          <span class="work-year">2023</span>
+          <span class="work-arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+    </ul>
+
+    <!-- Floating hover previews (pure-CSS art, follow the cursor) -->
+    <div class="work-preview" id="workPreview" aria-hidden="true">
+      <div class="preview-card preview-p1"><span class="preview-glyph">◐</span></div>
+      <div class="preview-card preview-p2"><span class="preview-glyph">≋</span></div>
+      <div class="preview-card preview-p3"><span class="preview-glyph">♪</span></div>
+      <div class="preview-card preview-p4"><span class="preview-glyph">◬</span></div>
+    </div>
+  </section>
+
+  <!-- ─── About / Philosophy ──────────────────────────────── -->
+  <section class="about" id="about">
+    <div class="section-head">
+      <h2 class="section-title"><em>About</em> &amp; philosophy</h2>
+      <span class="section-index">est. 2017</span>
+    </div>
+
+    <p class="about-manifesto" id="manifesto">
+      The best interfaces are felt before they are understood.
+      I obsess over the half-second — easing curves, hover states,
+      the weight of a page as it loads — because craft at that scale
+      is what turns a website into an experience worth remembering.
+    </p>
+
+    <div class="principles">
+      <article class="principle">
+        <span class="principle-num">№ 1</span>
+        <h3 class="principle-title">Motion with meaning</h3>
+        <p class="principle-body">Animation is choreography, not decoration. Every transition should explain where you are and where you're going.</p>
+      </article>
+      <article class="principle">
+        <span class="principle-num">№ 2</span>
+        <h3 class="principle-title">Performance is design</h3>
+        <p class="principle-body">A beautiful site that stutters isn't beautiful. I budget every frame — 60fps is part of the aesthetic.</p>
+      </article>
+      <article class="principle">
+        <span class="principle-num">№ 3</span>
+        <h3 class="principle-title">Details compound</h3>
+        <p class="principle-body">Cursor states, focus rings, scroll physics, empty states. A hundred small decisions are the whole product.</p>
+      </article>
+    </div>
+
+    <div class="about-stats">
+      <div class="stat"><span class="stat-value" data-count="9">0</span><span class="stat-label">years crafting the web</span></div>
+      <div class="stat"><span class="stat-value" data-count="42">0</span><span class="stat-label">projects shipped</span></div>
+      <div class="stat"><span class="stat-value" data-count="12">0</span><span class="stat-label">awards &amp; features</span></div>
+    </div>
+  </section>
+
+  <!-- ─── Footer / Contact ────────────────────────────────── -->
+  <footer class="footer" id="contact">
+    <p class="footer-kicker reveal-line">Have an idea worth building?</p>
+
+    <a href="mailto:hello@noaverne.dev" class="footer-title-link" data-cursor="Say hi">
+      <h2 class="footer-title" id="footerTitle" aria-label="Let's talk">Let’s&nbsp;talk</h2>
+    </a>
+
+    <div class="footer-actions">
+      <a href="mailto:hello@noaverne.dev" class="footer-mail" data-magnetic>
+        <span class="footer-mail-fill" aria-hidden="true"></span>
+        <span class="footer-mail-text">hello@noaverne.dev</span>
+      </a>
+    </div>
+
+    <div class="footer-bottom">
+      <nav class="footer-socials" aria-label="Social links">
+        <a href="#" class="footer-social" data-magnetic><span data-text="GitHub">GitHub</span></a>
+        <a href="#" class="footer-social" data-magnetic><span data-text="Dribbble">Dribbble</span></a>
+        <a href="#" class="footer-social" data-magnetic><span data-text="Twitter">Twitter</span></a>
+        <a href="#" class="footer-social" data-magnetic><span data-text="LinkedIn">LinkedIn</span></a>
+      </nav>
+      <div class="footer-meta">
+        <span class="footer-time">Lisbon&ensp;·&ensp;<span id="clock">00:00</span></span>
+        <span class="footer-copy">© 2026 Noa Verne</span>
+        <button class="footer-top" id="backTop" data-magnetic data-cursor="Top">↑&ensp;Back to top</button>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script src="gsap.min.js"></script>
+<script src="ScrollTrigger.min.js"></script>
+<script src="main.js"></script>
 </body>
 </html>
